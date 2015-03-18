@@ -12,6 +12,7 @@ function MainScene:onCreate()
     self.green:setPhysicsBody(cc.PhysicsBody:createBox(self.green:getContentSize(), {density = 0.1, restitution = 0.5, friction = 0.5}, cc.p(0, 0)))
     self.green:getPhysicsBody():setDynamic(false)
     self.arrow = display.newSprite("arrow.png"):hide():addTo(self)
+    self.bumpers = display.newLayer():addTo(self)
     self.shadows = display.newLayer():addTo(self)
 
     -- cc.PHYSICSSHAPE_MATERIAL_DEFAULT = {density = 0.0, restitution = 0.5, friction = 0.5}
@@ -142,6 +143,11 @@ function MainScene:resetDot()
     self.box:move(greenX, boxY)
     self.flag:move(greenX, boxY + 30)
     self.green:move(greenX, boxY - (self.box:getContentSize().height + self.green:getContentSize().height) / 2)
+    for _, e in ipairs(self.bumpers:getChildren()) do e:removeSelf() end
+    local bumper = display.newSprite("bumper.png", 180, 320):addTo(self.bumpers)
+    local bumperPb = cc.PhysicsBody:createCircle(bumper:getContentSize().width / 2, cc.PHYSICSBODY_MATERIAL_DEFAULT, cc.p(0, 0))
+    bumperPb:setDynamic(false)
+    bumper:setPhysicsBody(bumperPb)
     for _, e in ipairs(self.shadows:getChildren()) do e:removeSelf() end
 end
 
