@@ -4,17 +4,18 @@ local MainScene = class("MainScene", cc.load("mvc").ViewBase)
 local teeX, greenX = 15, 325
 
 function MainScene:onCreate()
-    self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):onTouch(handler(self, self.onTouch)):addTo(self)
-    display.newSprite("bg.png"):move(display.center):addTo(self)
+    self.mainNode = display.newNode():addTo(self)
+    self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):onTouch(handler(self, self.onTouch)):addTo(self.mainNode)
+    display.newSprite("bg.png"):move(display.center):addTo(self.mainNode)
 
-    self.tee = display.newSprite("grass.png"):addTo(self)
-    self.green = display.newSprite("grass.png"):addTo(self)
+    self.tee = display.newSprite("grass.png"):addTo(self.mainNode)
+    self.green = display.newSprite("grass.png"):addTo(self.mainNode)
     self.green:setPhysicsBody(cc.PhysicsBody:createBox(self.green:getContentSize(), {density = 0.1, restitution = 0.5, friction = 0.5}, cc.p(0, 0)))
     self.green:getPhysicsBody():setDynamic(false)
-    self.arrow = display.newSprite("arrow.png"):hide():addTo(self)
-    self.bumpers = display.newLayer():addTo(self)
-    self.coins = display.newLayer():addTo(self)
-    self.shadows = display.newLayer():addTo(self)
+    self.arrow = display.newSprite("arrow.png"):hide():addTo(self.mainNode)
+    self.bumpers = display.newLayer():addTo(self.mainNode)
+    self.coins = display.newLayer():addTo(self.mainNode)
+    self.shadows = display.newLayer():addTo(self.mainNode)
 
     -- cc.PHYSICSSHAPE_MATERIAL_DEFAULT = {density = 0.0, restitution = 0.5, friction = 0.5}
     -- cc.PHYSICSBODY_MATERIAL_DEFAULT = {density = 0.1, restitution = 0.5, friction = 0.5}
@@ -24,22 +25,35 @@ function MainScene:onCreate()
     pb:setGravityEnable(false)
     pb:setContactTestBitmask(1)
     self.dot:setPhysicsBody(pb)
-    self.dot:addTo(self)
+    self.dot:addTo(self.mainNode)
 
-    self.flag = display.newSprite("flag.png", 900, 600):addTo(self)
-    self.box = display.newSprite("box.png", 900, 500):addTo(self)
+    self.flag = display.newSprite("flag.png", 900, 600):addTo(self.mainNode)
+    self.box = display.newSprite("box.png", 900, 500):addTo(self.mainNode)
     self:resetDot()
 
     self.score = cc.Label:createWithSystemFont("0", "Arial", 32):move(display.cx, display.top - 100)
     self.score:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.score.value = 0
-    self.score:addTo(self)
+    self.score:addTo(self.mainNode)
 
     local coinValue = cc.UserDefault:getInstance():getIntegerForKey("coin", 0)
-    self.coin = cc.Label:createWithSystemFont(coinValue, "Arial", 20):align(cc.p(1, 1), display.right - 10, display.top - 10):addTo(self)
+    self.coin = cc.Label:createWithSystemFont(coinValue, "Arial", 20):align(cc.p(1, 1), display.right - 10, display.top - 10):addTo(self.mainNode)
     self.coin:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.coin.value = coinValue
-    self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self)
+    self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self.mainNode)
+
+    self.resultLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
+    self.screenShot = cc.RenderTexture:create(360, 640, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
+    self.screenShot:setScale(0.5)
+    self.screenShot:retain()
+    cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
+        local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
+        self.screenShot:newImage():saveToFile(name)
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "share", {
+            text = "SCORE: " .. self.score.value,
+            image = name
+        })
+    end)):move(0, 0):addTo(self)
 
     local handPos = cc.p(display.cx + 50, display.cy + 50 - 100)
     self.hand = display.newSprite("hand.png"):move(handPos):addTo(self)
@@ -80,7 +94,7 @@ function MainScene:step(delta)
         pb:setAngularVelocity(0)
         pb:setGravityEnable(false)
         local die = function() return cc.Spawn:create(cc.FadeTo:create(0.5, 127), cc.MoveBy:create(0.5, cc.p(0, 10))) end
-        self.ring = display.newSprite("ring.png", self.dot:getPositionX(), self.dot:getPositionY() + rad):addTo(self)
+        self.ring = display.newSprite("ring.png", self.dot:getPositionX(), self.dot:getPositionY() + rad):addTo(self.mainNode)
         self.dot:runAction(cc.Sequence:create(die(), cc.CallFunc:create(handler(self, self.showResult))))
         self.ring:runAction(cc.Sequence:create(die()))
         local shadows = self.shadows:getChildren()
@@ -89,6 +103,9 @@ function MainScene:step(delta)
             shadows[#shadows]:removeSelf()
         end
         self.bg:removeTouch()
+        self.screenShot:begin()
+        self.mainNode:visit()
+        self.screenShot:endToLua()
         audio.playSound("ob.mp3")
         return
     elseif cc.rectIntersectsRect(self.dot:getBoundingBox(), self.flag:getBoundingBox()) and not self.hit then
@@ -109,7 +126,12 @@ function MainScene:step(delta)
         self.score.value = self.score.value + 1
         self.score:setString(self.score.value)
         self:unscheduleUpdate()
-        self:resetDot()
+        self.screenShot:begin()
+        self.mainNode:visit()
+        self.screenShot:endToLua()
+        self:runAction(cc.CallFunc:create(function()
+            self:resetDot()
+        end))
         audio.playSound("cupin.mp3")
     end
     for _, e in ipairs(self.coins:getChildren()) do
@@ -134,22 +156,10 @@ function MainScene:step(delta)
 end
 
 function MainScene:showResult()
-    local screenShot = cc.RenderTexture:create(360, 640, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888)
-    screenShot:begin()
-    self:visit()
-    screenShot:endToLua()
-    local resultLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):addTo(self)
-    screenShot:move(display.center):addTo(resultLayer):setScale(0.5)
-    local share = cc.MenuItemImage:create("share_ios.png", "share_ios.png"):move(display.cx, display.cy - 180):onClicked(function()
-        local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
-        screenShot:newImage():saveToFile(name)
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "share", {
-            text = "SCORE: " .. self.score.value,
-            image = name
-        })
-    end)
+    self.screenShot:addTo(self.resultLayer)
     local retry = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, 45):onClicked(function()
-        resultLayer:removeSelf()
+        for _, e in ipairs(self.resultLayer:getChildren()) do e:removeSelf() end
+        self.resultLayer:hide()
         self.score.value = 0
         self.score:setString("0")
         self.ring:removeSelf()
@@ -157,7 +167,8 @@ function MainScene:showResult()
         self:resetDot()
         self.bg:onTouch(handler(self, self.onTouch))
     end)
-    cc.Menu:create(share, retry):move(0, 0):addTo(resultLayer)
+    cc.Menu:create(retry):move(0, 0):addTo(self.resultLayer)
+    self.resultLayer:show()
 end
 
 function MainScene:resetDot()
