@@ -46,14 +46,14 @@ function MainScene:onCreate()
     self.screenShot = cc.RenderTexture:create(360, 640, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
     self.screenShot:setScale(0.5)
     self.screenShot:retain()
-    cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
+    self.shareMenu = cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
         local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
         self.screenShot:newImage():saveToFile(name)
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "share", {
             text = "SCORE: " .. self.score.value,
             image = name
         })
-    end)):move(0, 0):addTo(self)
+    end)):move(0, 0):addTo(self):hide()
 
     local handPos = cc.p(display.cx + 50, display.cy + 50 - 100)
     self.hand = display.newSprite("hand.png"):move(handPos):addTo(self)
@@ -106,6 +106,7 @@ function MainScene:step(delta)
         self.screenShot:begin()
         self.mainNode:visit()
         self.screenShot:endToLua()
+        self.shareMenu:show()
         audio.playSound("ob.mp3")
         return
     elseif cc.rectIntersectsRect(self.dot:getBoundingBox(), self.flag:getBoundingBox()) and not self.hit then
@@ -129,6 +130,7 @@ function MainScene:step(delta)
         self.screenShot:begin()
         self.mainNode:visit()
         self.screenShot:endToLua()
+        self.shareMenu:show()
         self:runAction(cc.CallFunc:create(function()
             self:resetDot()
         end))
