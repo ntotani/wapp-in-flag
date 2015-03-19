@@ -84,6 +84,7 @@ void AppDelegate::applicationDidEnterBackground()
     Director::getInstance()->stopAnimation();
 
     SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+    UserDefault::getInstance()->flush();
 }
 
 // this function will be called when the app is active again

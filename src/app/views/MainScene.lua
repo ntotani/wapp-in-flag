@@ -13,6 +13,7 @@ function MainScene:onCreate()
     self.green:getPhysicsBody():setDynamic(false)
     self.arrow = display.newSprite("arrow.png"):hide():addTo(self)
     self.bumpers = display.newLayer():addTo(self)
+    self.coins = display.newLayer():addTo(self)
     self.shadows = display.newLayer():addTo(self)
 
     -- cc.PHYSICSSHAPE_MATERIAL_DEFAULT = {density = 0.0, restitution = 0.5, friction = 0.5}
@@ -33,6 +34,12 @@ function MainScene:onCreate()
     self.score:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.score.value = 0
     self.score:addTo(self)
+
+    local coinValue = cc.UserDefault:getInstance():getIntegerForKey("coin", 0)
+    self.coin = cc.Label:createWithSystemFont(coinValue, "Arial", 20):align(cc.p(1, 1), display.right - 10, display.top - 10):addTo(self)
+    self.coin:enableOutline(cc.c4b(0, 0, 0, 255), 2)
+    self.coin.value = coinValue
+    self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self)
 
     local cl = cc.EventListenerPhysicsContact:create()
     cl:registerScriptHandler(handler(self, self.onContactBegin), cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
@@ -94,6 +101,18 @@ function MainScene:step(delta)
         self:resetDot()
         audio.playSound("cupin.mp3")
     end
+    for _, e in ipairs(self.coins:getChildren()) do
+        local dist = cc.pDistanceSQ(cc.p(e:getPosition()), cc.p(self.dot:getPosition()))
+        local limit = rad + e:getContentSize().width / 2
+        if dist <= limit * limit then
+            self.coin.value = self.coin.value + 1
+            cc.UserDefault:getInstance():setIntegerForKey("coin", self.coin.value)
+            self.coin:setString(self.coin.value)
+            self.coin.icon:setPositionX(self.coin:getPositionX() - self.coin:getContentSize().width - 5)
+            e:removeSelf()
+            audio.playSound("coin.mp3")
+        end
+    end
     if not self.hit then
         self.shadowCounter = self.shadowCounter + delta
         if self.shadowCounter >= 0.1 then
@@ -148,6 +167,8 @@ function MainScene:resetDot()
     local bumperPb = cc.PhysicsBody:createCircle(bumper:getContentSize().width / 2, cc.PHYSICSBODY_MATERIAL_DEFAULT, cc.p(0, 0))
     bumperPb:setDynamic(false)
     bumper:setPhysicsBody(bumperPb)
+    for _, e in ipairs(self.coins:getChildren()) do e:removeSelf() end
+    display.newSprite("coin.png", 180, 500):addTo(self.coins)
     for _, e in ipairs(self.shadows:getChildren()) do e:removeSelf() end
 end
 
