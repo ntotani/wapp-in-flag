@@ -41,6 +41,17 @@ function MainScene:onCreate()
     self.coin.value = coinValue
     self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self)
 
+    local handPos = cc.p(display.cx + 50, display.cy + 50 - 100)
+    self.hand = display.newSprite("hand.png"):move(handPos):addTo(self)
+    self.hand:runAction(cc.RepeatForever:create(cc.Sequence:create(
+        cc.DelayTime:create(0.5),
+        cc.MoveBy:create(0.5, cc.p(-100, -100)),
+        cc.DelayTime:create(0.5),
+        cc.CallFunc:create(function() self.hand:setVisible(false) end),
+        cc.DelayTime:create(0.5),
+        cc.CallFunc:create(function() self.hand:move(handPos):setVisible(true) end)
+    )))
+
     local cl = cc.EventListenerPhysicsContact:create()
     cl:registerScriptHandler(handler(self, self.onContactBegin), cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
     cl:registerScriptHandler(handler(self, self.onContactPresolve), cc.Handler.EVENT_PHYSICS_CONTACT_PRESOLVE)
@@ -184,6 +195,10 @@ function MainScene:onTouch(event)
         local angle = cc.pGetAngle(cc.p(0, 0), dir)
         self.arrow:setRotation(-angle * 180 / math.pi + 90)
         self.arrow:show()
+        if self.hand then
+            self.hand:removeSelf()
+            self.hand = nil
+        end
     elseif event.name == "ended" then
         pb:setGravityEnable(true)
         pb:setVelocity(cc.pMul(dir, 800))
