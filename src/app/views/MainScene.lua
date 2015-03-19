@@ -103,9 +103,6 @@ function MainScene:step(delta)
             shadows[#shadows]:removeSelf()
         end
         self.bg:removeTouch()
-        self.screenShot:begin()
-        self.mainNode:visit()
-        self.screenShot:endToLua()
         self.shareMenu:show()
         audio.playSound("ob.mp3")
         return
@@ -158,6 +155,9 @@ function MainScene:step(delta)
 end
 
 function MainScene:showResult()
+    self.screenShot:begin()
+    self.mainNode:visit()
+    self.screenShot:endToLua()
     self.screenShot:addTo(self.resultLayer)
     local retry = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, 45):onClicked(function()
         for _, e in ipairs(self.resultLayer:getChildren()) do e:removeSelf() end
@@ -180,6 +180,7 @@ function MainScene:resetDot()
     pb:setAngularVelocity(0)
     pb:setGravityEnable(false)
     self.dot:move(teeX, dotY)
+    self.dot:setRotation(0)
     self.arrow:move(teeX, dotY)
     self.tee:move(teeX, dotY - (self.dot:getContentSize().height + self.tee:getContentSize().height) / 2)
     local boxY = math.random(100, 500)
@@ -187,10 +188,12 @@ function MainScene:resetDot()
     self.flag:move(greenX, boxY + 30)
     self.green:move(greenX, boxY - (self.box:getContentSize().height + self.green:getContentSize().height) / 2)
     for _, e in ipairs(self.bumpers:getChildren()) do e:removeSelf() end
-    local bumper = display.newSprite("bumper.png", 180, 320):addTo(self.bumpers)
-    local bumperPb = cc.PhysicsBody:createCircle(bumper:getContentSize().width / 2, cc.PHYSICSBODY_MATERIAL_DEFAULT, cc.p(0, 0))
-    bumperPb:setDynamic(false)
-    bumper:setPhysicsBody(bumperPb)
+    for i = 1, math.random(1, 5) do
+        local bumper = display.newSprite("bumper.png", math.random(80, 280), math.random(220, 420)):addTo(self.bumpers)
+        local bumperPb = cc.PhysicsBody:createCircle(bumper:getContentSize().width / 2, cc.PHYSICSBODY_MATERIAL_DEFAULT, cc.p(0, 0))
+        bumperPb:setDynamic(false)
+        bumper:setPhysicsBody(bumperPb)
+    end
     for _, e in ipairs(self.coins:getChildren()) do e:removeSelf() end
     display.newSprite("coin.png", 180, 500):addTo(self.coins)
     for _, e in ipairs(self.shadows:getChildren()) do e:removeSelf() end
