@@ -187,6 +187,11 @@ function MainScene:resetDot()
     self.box:move(greenX, boxY)
     self.flag:move(greenX, boxY + 30)
     self.green:move(greenX, boxY - (self.box:getContentSize().height + self.green:getContentSize().height) / 2)
+
+    local t1, t2 = self:calcTheta(greenX - teeX, boxY - dotY, -980, 800)
+    local vel = cc.pMul(cc.pForAngle(t1), 800)
+    local rects = self:calcRects(vel.x, vel.y, -980, (greenX - teeX) / vel.x, 32)
+
     for _, e in ipairs(self.bumpers:getChildren()) do e:removeSelf() end
     for i = 1, math.random(1, 5) do
         local bumper = display.newSprite("bumper.png", math.random(80, 280), math.random(220, 420)):addTo(self.bumpers)
@@ -239,6 +244,40 @@ function MainScene:onContactPostsolve(contact, solve)
 end
 
 function MainScene:onContactSeparate(contact)
+end
+
+function MainScene:calcTheta(x, y, g, v)
+    local A = g * x * x / (2 * v * v)
+    local a = x / A
+    local b = -y / A + 1
+    local X = a * a / 4 - b
+    -- assert X >= 0
+    X = math.sqrt(X)
+    local X1 = X - a / 2
+    local X2 = -X - a / 2
+    return math.atan(X1), math.atan(X2)
+end
+
+function MainScene:calcRects(vx, vy, acc, maxTime, dist)
+    local currentTime = 0
+    local pos = function(t)
+        return cc.p(vx * t, vy * t + (acc / 2) * t * t)
+    end
+    local rects = {}
+    while currentTime <= maxTime do
+        local p = pos(currentTime)
+        local dt = 0.1
+        while cc.pDistanceSQ(p, pos(currentTime + dt)) > dist * dist do
+            dt = dt / 2
+        end
+        local np = pos(currentTime + dt)
+        table.insert(rects, cc.rectUnion(
+            cc.rect(p.x - dist / 2, p.y - dist / 2, dist, dist),
+            cc.rect(np.x - dist / 2, np.y - dist / 2, dist, dist)
+        ))
+        currentTime = currentTime + dt
+    end
+    return rects
 end
 
 return MainScene
