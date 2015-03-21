@@ -5,6 +5,11 @@ local teeX, greenX = 15, 325
 local MAX_BUMPER = 10
 local COIN_APPERE_RATE = 10
 
+local DOTS = {
+    shobon = {vel = 800, gra = 980},
+    shakin = {vel = 1600, gra = 1960}
+}
+
 function MainScene:onCreate()
     self.mainNode = display.newNode():addTo(self)
     self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):onTouch(handler(self, self.onTouch)):addTo(self.mainNode)
@@ -19,9 +24,11 @@ function MainScene:onCreate()
     self.coins = display.newLayer():addTo(self.mainNode)
     self.shadows = display.newLayer():addTo(self.mainNode)
 
+    self.face = "shobon"
+
     -- cc.PHYSICSSHAPE_MATERIAL_DEFAULT = {density = 0.0, restitution = 0.5, friction = 0.5}
     -- cc.PHYSICSBODY_MATERIAL_DEFAULT = {density = 0.1, restitution = 0.5, friction = 0.5}
-    self.dot = display.newSprite("ball.png", 32, 96)
+    self.dot = display.newSprite("dots/" .. self.face .. ".png", 32, 96)
     local material = {density = 0.1, restitution = 0.5, friction = 0.5}
     local pb = cc.PhysicsBody:createCircle(self.dot:getContentSize().width / 2, material, cc.p(0, 0))
     pb:setGravityEnable(false)
@@ -153,7 +160,7 @@ function MainScene:step(delta)
         self.shadowCounter = self.shadowCounter + delta
         if self.shadowCounter >= 0.1 then
             self.shadowCounter = 0
-            display.newSprite("ball.png"):move(self.dot:getPosition()):rotate(self.dot:getRotation()):addTo(self.shadows):runAction(cc.Sequence:create(cc.FadeOut:create(2), cc.RemoveSelf:create()))
+            display.newSprite("dots/" .. self.face .. ".png"):move(self.dot:getPosition()):rotate(self.dot:getRotation()):addTo(self.shadows):runAction(cc.Sequence:create(cc.FadeOut:create(2), cc.RemoveSelf:create()))
         end
     end
 end
@@ -178,8 +185,14 @@ function MainScene:showResult()
 end
 
 function MainScene:resetDot()
-    local gravity = -980
-    local dotVel = 800
+
+    local faces = table.keys(DOTS)
+    self.face = faces[math.random(1, #faces)]
+    self.dot:setTexture("dots/" .. self.face .. ".png")
+    cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS[self.face].gra))
+
+    local gravity = -DOTS[self.face].gra
+    local dotVel = DOTS[self.face].vel
     local angle1, angle2, dotY, flagY = -1, -1, 0, 0
     while angle1 == -1 or angle2 == -1 do
         dotY = math.random(100, display.top - 100)
@@ -257,7 +270,7 @@ function MainScene:onTouch(event)
         end
     elseif event.name == "ended" then
         pb:setGravityEnable(true)
-        pb:setVelocity(cc.pMul(dir, 800))
+        pb:setVelocity(cc.pMul(dir, DOTS[self.face].vel))
         pb:setAngularVelocity(10)
         self.arrow:hide()
         self.hit = false
