@@ -29,8 +29,9 @@ function MainScene:onCreate()
     self.dot:setPhysicsBody(pb)
     self.dot:addTo(self.mainNode)
 
-    self.flag = display.newSprite("flag.png", 900, 600):addTo(self.mainNode)
-    self.box = display.newSprite("box.png", 900, 500):addTo(self.mainNode)
+    self.pin = display.newSprite("pin.png"):addTo(self.mainNode)
+    self.flag = display.newSprite("flag.png"):addTo(self.mainNode)
+    self.box = display.newSprite("box.png"):hide():addTo(self.mainNode)
 
     self.score = cc.Label:createWithSystemFont("0", "Arial", 32):move(display.cx, display.top - 100)
     self.score:enableOutline(cc.c4b(0, 0, 0, 255), 2)
@@ -109,7 +110,7 @@ function MainScene:step(delta)
         self.shareMenu:show()
         audio.playSound("ob.mp3")
         return
-    elseif cc.rectIntersectsRect(self.dot:getBoundingBox(), self.flag:getBoundingBox()) and not self.hit then
+    elseif cc.pDistanceSQ(cc.p(self.dot:getPosition()), cc.p(self.flag:getPosition())) <= 4 * rad * rad and not self.hit then
         self.hit = true
         self.dot:setPosition(self.flag:getPosition())
         self.dot:getPhysicsBody():setVelocity(cc.p(0, 0))
@@ -179,11 +180,11 @@ end
 function MainScene:resetDot()
     local gravity = -980
     local dotVel = 800
-    local angle1, angle2, dotY, boxY = -1, -1, 0, 0
+    local angle1, angle2, dotY, flagY = -1, -1, 0, 0
     while angle1 == -1 or angle2 == -1 do
         dotY = math.random(100, display.top - 100)
-        boxY = math.random(100, display.top - 100)
-        angle1, angle2 = self:calcTheta(greenX - teeX, boxY - dotY, gravity, dotVel)
+        flagY = math.random(100, display.top - 100)
+        angle1, angle2 = self:calcTheta(greenX - teeX, flagY - dotY, gravity, dotVel)
     end
     local pb = self.dot:getPhysicsBody()
     pb:setVelocity(cc.p(0, 0))
@@ -193,9 +194,10 @@ function MainScene:resetDot()
     self.dot:setRotation(0)
     self.arrow:move(teeX, dotY)
     self.tee:move(teeX, dotY - (self.dot:getContentSize().height + self.tee:getContentSize().height) / 2)
-    self.box:move(greenX, boxY)
-    self.flag:move(greenX, boxY + 30)
-    self.green:move(greenX, boxY - (self.box:getContentSize().height + self.green:getContentSize().height) / 2)
+    self.flag:move(greenX, flagY)
+    self.pin:move(greenX, flagY - (self.flag:getContentSize().height + self.pin:getContentSize().height) / 2)
+    self.box:move(greenX, self.pin:getPositionY() - self.pin:getContentSize().height / 2)
+    self.green:move(greenX, self.box:getPositionY() - self.green:getContentSize().height / 2)
     local safeAngle = math.random(1, 2) == 1 and angle1 or angle2
     local safeVel = cc.pMul(cc.pForAngle(safeAngle), dotVel)
     local safeTime = (greenX - teeX) / safeVel.x
