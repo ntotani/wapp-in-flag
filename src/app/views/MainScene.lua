@@ -3,6 +3,7 @@ local MainScene = class("MainScene", cc.load("mvc").ViewBase)
 
 local teeX, greenX = 15, 325
 local MAX_BUMPER = 10
+local COIN_APPERE_RATE = 10
 
 function MainScene:onCreate()
     self.mainNode = display.newNode():addTo(self)
@@ -197,7 +198,8 @@ function MainScene:resetDot()
     self.green:move(greenX, boxY - (self.box:getContentSize().height + self.green:getContentSize().height) / 2)
     local safeAngle = math.random(1, 2) == 1 and angle1 or angle2
     local safeVel = cc.pMul(cc.pForAngle(safeAngle), dotVel)
-    local safePath = self:calcPath(safeVel.x, safeVel.y, gravity, (greenX - teeX) / safeVel.x, self.dot:getContentSize().width, teeX, dotY)
+    local safeTime = (greenX - teeX) / safeVel.x
+    local safePath = self:calcPath(safeVel.x, safeVel.y, gravity, safeTime, self.dot:getContentSize().width, teeX, dotY)
     for _, e in ipairs(self.bumpers:getChildren()) do e:removeSelf() end
     for _ = 1, math.random(0, math.min(self.score.value, MAX_BUMPER)) do
         local bumper = display.newSprite("bumper.png"):addTo(self.bumpers)
@@ -224,7 +226,14 @@ function MainScene:resetDot()
         bumper:setPhysicsBody(bumperPb)
     end
     for _, e in ipairs(self.coins:getChildren()) do e:removeSelf() end
-    display.newSprite("coin.png", 180, 500):addTo(self.coins)
+    if math.random(1, 100) <= COIN_APPERE_RATE then
+        local t = safeTime * (0.1 + 0.8 * math.random())
+        local x = teeX + safeVel.x * t
+        local y = dotY + safeVel.y * t + gravity / 2 * t * t
+        if y < display.top then
+            display.newSprite("coin.png", x, y):addTo(self.coins)
+        end
+    end
     for _, e in ipairs(self.shadows:getChildren()) do e:removeSelf() end
 end
 
