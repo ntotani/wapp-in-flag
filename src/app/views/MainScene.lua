@@ -2,6 +2,7 @@
 local MainScene = class("MainScene", cc.load("mvc").ViewBase)
 
 local teeX, greenX = 15, 325
+local MAX_BUMPER = 10
 
 function MainScene:onCreate()
     self.mainNode = display.newNode():addTo(self)
@@ -29,7 +30,6 @@ function MainScene:onCreate()
 
     self.flag = display.newSprite("flag.png", 900, 600):addTo(self.mainNode)
     self.box = display.newSprite("box.png", 900, 500):addTo(self.mainNode)
-    self:resetDot()
 
     self.score = cc.Label:createWithSystemFont("0", "Arial", 32):move(display.cx, display.top - 100)
     self.score:enableOutline(cc.c4b(0, 0, 0, 255), 2)
@@ -65,6 +65,8 @@ function MainScene:onCreate()
         cc.DelayTime:create(0.5),
         cc.CallFunc:create(function() self.hand:move(handPos):setVisible(true) end)
     )))
+
+    self:resetDot()
 
     local cl = cc.EventListenerPhysicsContact:create()
     cl:registerScriptHandler(handler(self, self.onContactBegin), cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
@@ -174,7 +176,14 @@ function MainScene:showResult()
 end
 
 function MainScene:resetDot()
-    local dotY = math.random(100, 500)
+    local gravity = -980
+    local dotVel = 800
+    local angle1, angle2, dotY, boxY = -1, -1, 0, 0
+    while angle1 == -1 or angle2 == -1 do
+        dotY = math.random(100, display.top - 100)
+        boxY = math.random(100, display.top - 100)
+        angle1, angle2 = self:calcTheta(greenX - teeX, boxY - dotY, gravity, dotVel)
+    end
     local pb = self.dot:getPhysicsBody()
     pb:setVelocity(cc.p(0, 0))
     pb:setAngularVelocity(0)
@@ -183,18 +192,33 @@ function MainScene:resetDot()
     self.dot:setRotation(0)
     self.arrow:move(teeX, dotY)
     self.tee:move(teeX, dotY - (self.dot:getContentSize().height + self.tee:getContentSize().height) / 2)
-    local boxY = math.random(100, 500)
     self.box:move(greenX, boxY)
     self.flag:move(greenX, boxY + 30)
     self.green:move(greenX, boxY - (self.box:getContentSize().height + self.green:getContentSize().height) / 2)
-
-    local t1, t2 = self:calcTheta(greenX - teeX, boxY - dotY, -980, 800)
-    local vel = cc.pMul(cc.pForAngle(t1), 800)
-    local rects = self:calcRects(vel.x, vel.y, -980, (greenX - teeX) / vel.x, 32)
-
+    local safeAngle = math.random(1, 2) == 1 and angle1 or angle2
+    local safeVel = cc.pMul(cc.pForAngle(safeAngle), dotVel)
+    local safePath = self:calcPath(safeVel.x, safeVel.y, gravity, (greenX - teeX) / safeVel.x, self.dot:getContentSize().width, teeX, dotY)
     for _, e in ipairs(self.bumpers:getChildren()) do e:removeSelf() end
-    for i = 1, math.random(1, 5) do
-        local bumper = display.newSprite("bumper.png", math.random(80, 280), math.random(220, 420)):addTo(self.bumpers)
+    for _ = 1, math.random(0, math.min(self.score.value, MAX_BUMPER)) do
+        local bumper = display.newSprite("bumper.png"):addTo(self.bumpers)
+        local s = bumper:getContentSize()
+        local x, y = -1, -1
+        while x == -1 or y == -1 do
+            x = math.random(display.left, display.right)
+            y = math.random(display.bottom, display.top)
+            local rect = cc.rect(x - s.width / 2, y - s.height / 2, s.width, s.height)
+            if cc.rectIntersectsRect(rect, self.tee:getBoundingBox()) or cc.rectIntersectsRect(rect, self.green:getBoundingBox()) then
+                x, y = -1, -1
+            else
+                for _, e in ipairs(safePath) do
+                    if cc.rectIntersectsRect(e, rect) then
+                        x, y = -1, -1
+                        break
+                    end
+                end
+            end
+        end
+        bumper:move(x, y)
         local bumperPb = cc.PhysicsBody:createCircle(bumper:getContentSize().width / 2, cc.PHYSICSBODY_MATERIAL_DEFAULT, cc.p(0, 0))
         bumperPb:setDynamic(false)
         bumper:setPhysicsBody(bumperPb)
@@ -251,14 +275,16 @@ function MainScene:calcTheta(x, y, g, v)
     local a = x / A
     local b = -y / A + 1
     local X = a * a / 4 - b
-    -- assert X >= 0
+    if X <= 0 then
+        return -1, -1
+    end
     X = math.sqrt(X)
     local X1 = X - a / 2
     local X2 = -X - a / 2
     return math.atan(X1), math.atan(X2)
 end
 
-function MainScene:calcRects(vx, vy, acc, maxTime, dist)
+function MainScene:calcPath(vx, vy, acc, maxTime, dist, bx, by)
     local currentTime = 0
     local pos = function(t)
         return cc.p(vx * t, vy * t + (acc / 2) * t * t)
@@ -272,12 +298,20 @@ function MainScene:calcRects(vx, vy, acc, maxTime, dist)
         end
         local np = pos(currentTime + dt)
         table.insert(rects, cc.rectUnion(
-            cc.rect(p.x - dist / 2, p.y - dist / 2, dist, dist),
-            cc.rect(np.x - dist / 2, np.y - dist / 2, dist, dist)
+            cc.rect(bx +  p.x - dist / 2, by +  p.y - dist / 2, dist, dist),
+            cc.rect(bx + np.x - dist / 2, by + np.y - dist / 2, dist, dist)
         ))
         currentTime = currentTime + dt
     end
     return rects
+end
+
+function MainScene:dumpPath(path)
+    for _, e in ipairs(path) do
+        local box = display.newSprite("box.png", e.x + e.width / 2, e.y + e.height / 2):addTo(self)
+        box:setScale(e.width, e.height)
+        box:setOpacity(127)
+    end
 end
 
 return MainScene
