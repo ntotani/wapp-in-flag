@@ -76,13 +76,22 @@ function MainScene:onCreate()
     for i = 1, 10 do
         display.newSprite("dots/" .. (i % 2 == 0 and "shobon" or "shakin") .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
     end
-    local hold = false
     scrollView:addTouchEventListener(function(sender, state)
         if state == ccui.TouchEventType.began then
-            hold = true
             scrollView:setInertiaScrollEnabled(true)
         elseif state ~= ccui.TouchEventType.moved then
-            hold = false
+            local prevPos = 0
+            dotsLayer:scheduleUpdate(function()
+                local currentPos = scrollView:getInnerContainer():getPositionX()
+                if currentPos == prevPos then
+                    scrollView:setInertiaScrollEnabled(false)
+                    local i = math.floor((bgSize.width / 2 - currentPos - (bgSize.width / 2 - 32)) / 64)
+                    local x = -i * 64
+                    scrollView:getInnerContainer():setPositionX(x)
+                    dotsLayer:unscheduleUpdate()
+                end
+                prevPos = currentPos
+            end)
         end
     end)
     scrollView:addEventListener(function(e, t)
@@ -94,16 +103,6 @@ function MainScene:onCreate()
             self.hand:removeSelf()
             self.hand = nil
         end
-        local prevPos = 0
-        dotsLayer:onUpdate(function()
-            local currentPos = scrollView:getInnerContainer():getPositionX()
-            if not hold and currentPos == prevPos then
-                scrollView:setInertiaScrollEnabled(false)
-                scrollView:getInnerContainer():setPositionX(0)
-                currentPos = 0
-            end
-            prevPos = currentPos
-        end)
         dotsLayer:show()
     end)):move(0, 0):addTo(self)
 
