@@ -1,3 +1,4 @@
+require "cocos.ui.GuiConstants"
 
 local MainScene = class("MainScene", cc.load("mvc").ViewBase)
 
@@ -63,6 +64,48 @@ function MainScene:onCreate()
             image = name
         })
     end)):move(0, 0):addTo(self):hide()
+    local dotsLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
+    local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(dotsLayer)
+    local bgSize = dotsBg:getContentSize()
+    local scrollView = ccui.ScrollView:create():move(display.cx - bgSize.width / 2, display.cy - bgSize.height / 2):addTo(dotsLayer)
+    scrollView:setBounceEnabled(true)
+    scrollView:setDirection(ccui.ScrollViewDir.horizontal)
+    scrollView:setTouchEnabled(true)
+    scrollView:setContentSize(bgSize)
+    scrollView:setInnerContainerSize(cc.size(64 * 10 + bgSize.width - 64, bgSize.height))
+    for i = 1, 10 do
+        display.newSprite("dots/" .. (i % 2 == 0 and "shobon" or "shakin") .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
+    end
+    local hold = false
+    scrollView:addTouchEventListener(function(sender, state)
+        if state == ccui.TouchEventType.began then
+            hold = true
+            scrollView:setInertiaScrollEnabled(true)
+        elseif state ~= ccui.TouchEventType.moved then
+            hold = false
+        end
+    end)
+    scrollView:addEventListener(function(e, t)
+        if t == ccui.ScrollviewEventType.scrolling then
+        end
+    end)
+    cc.Menu:create(cc.MenuItemImage:create("dots.png", "dots.png"):align(cc.p(0, 0), display.left + 10, 10):onClicked(function()
+        if self.hand then
+            self.hand:removeSelf()
+            self.hand = nil
+        end
+        local prevPos = 0
+        dotsLayer:onUpdate(function()
+            local currentPos = scrollView:getInnerContainer():getPositionX()
+            if not hold and currentPos == prevPos then
+                scrollView:setInertiaScrollEnabled(false)
+                scrollView:getInnerContainer():setPositionX(0)
+                currentPos = 0
+            end
+            prevPos = currentPos
+        end)
+        dotsLayer:show()
+    end)):move(0, 0):addTo(self)
 
     local handPos = cc.p(display.cx + 50, display.cy + 50 - 100)
     self.hand = display.newSprite("hand.png"):move(handPos):addTo(self)
@@ -189,7 +232,8 @@ function MainScene:resetDot()
     local faces = table.keys(DOTS)
     self.face = faces[math.random(1, #faces)]
     self.dot:setTexture("dots/" .. self.face .. ".png")
-    cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS[self.face].gra))
+    local pw = cc.Director:getInstance():getRunningScene():getPhysicsWorld()
+    if pw then pw:setGravity(cc.p(0, -DOTS[self.face].gra)) end
 
     local gravity = -DOTS[self.face].gra
     local dotVel = DOTS[self.face].vel

@@ -1801,6 +1801,9 @@ bool ScrollView::isBounceEnabled() const
 void ScrollView::setInertiaScrollEnabled(bool enabled)
 {
     _inertiaScrollEnabled = enabled;
+    if (!enabled) {
+        stopAutoScrollChildren();
+    }
 }
 
 bool ScrollView::isInertiaScrollEnabled() const
