@@ -56,7 +56,9 @@ function MainScene:onCreate()
     self.screenShot = cc.RenderTexture:create(display.width, display.height, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
     self.screenShot:setScale(0.5)
     self.screenShot:retain()
+    local dotsLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide()
     self.shareMenu = cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
+        if dotsLayer:isVisible() then return end
         local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
         self.screenShot:newImage():saveToFile(name)
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "share", {
@@ -64,7 +66,7 @@ function MainScene:onCreate()
             image = name
         })
     end)):move(0, 0):addTo(self):hide()
-    local dotsLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
+    dotsLayer:addTo(self)
     local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(dotsLayer)
     local bgSize = dotsBg:getContentSize()
     local scrollView = ccui.ScrollView:create():move(display.cx - bgSize.width / 2, display.cy - bgSize.height / 2):addTo(dotsLayer)
