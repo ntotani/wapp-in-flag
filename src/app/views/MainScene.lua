@@ -52,7 +52,7 @@ function MainScene:onCreate()
     self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self.mainNode)
 
     self.resultLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
-    self.screenShot = cc.RenderTexture:create(360, 640, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
+    self.screenShot = cc.RenderTexture:create(display.width, display.height, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
     self.screenShot:setScale(0.5)
     self.screenShot:retain()
     self.shareMenu = cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
