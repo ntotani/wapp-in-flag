@@ -13,7 +13,7 @@ local DOTS = {
 
 function MainScene:onCreate()
     self.mainNode = display.newNode():addTo(self)
-    self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):onTouch(handler(self, self.onTouch)):addTo(self.mainNode)
+    self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):addTo(self.mainNode)
     display.newSprite("bg.png"):move(display.center):addTo(self.mainNode)
 
     self.tee = display.newSprite("grass.png"):addTo(self.mainNode)
@@ -180,7 +180,6 @@ function MainScene:step(delta)
         if cc.rectIntersectsRect(shadows[#shadows]:getBoundingBox(), self.dot:getBoundingBox()) then
             shadows[#shadows]:removeSelf()
         end
-        self.bg:removeTouch()
         self.shareMenu:show()
         audio.playSound("ob.mp3")
         return
@@ -245,7 +244,6 @@ function MainScene:showResult()
         self.ring:removeSelf()
         self.dot:setOpacity(255)
         self:resetDot()
-        self.bg:onTouch(handler(self, self.onTouch))
     end)
     cc.Menu:create(retry):move(0, 0):addTo(self.resultLayer)
     self.resultLayer:show()
@@ -321,6 +319,7 @@ function MainScene:resetDot()
     if self.score.value == 0 then
         self.dotsMenu:show()
     end
+    self.bg:onTouch(handler(self, self.onTouch))
 end
 
 function MainScene:onTouch(event)
@@ -347,6 +346,7 @@ function MainScene:onTouch(event)
         self.dotsMenu:hide()
         self.hit = false
         self.shadowCounter = 0
+        self.bg:removeTouch()
         self:scheduleUpdate(handler(self, self.step))
         audio.playSound("shot.mp3")
     end
