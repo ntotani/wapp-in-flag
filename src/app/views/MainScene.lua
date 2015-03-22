@@ -329,16 +329,22 @@ function MainScene:onTouch(event)
         self.beganEvent = event
         return true
     end
-    local dir = cc.pNormalize(cc.pSub(self.beganEvent, event))
+    local sub = cc.pSub(self.beganEvent, event)
+    local isCancel = cc.pLengthSQ(sub) < 255
+    local dir = cc.pNormalize(sub)
     if event.name == "moved" then
-        local angle = cc.pGetAngle(cc.p(0, 0), dir)
-        self.arrow:setRotation(-angle * 180 / math.pi + 90)
-        self.arrow:show()
-        if self.hand then
-            self.hand:removeSelf()
-            self.hand = nil
+        if isCancel then
+            self.arrow:hide()
+        else
+            self.arrow:show()
+            local angle = cc.pGetAngle(cc.p(0, 0), dir)
+            self.arrow:setRotation(-angle * 180 / math.pi + 90)
+            if self.hand then
+                self.hand:removeSelf()
+                self.hand = nil
+            end
         end
-    elseif event.name == "ended" then
+    elseif event.name == "ended" and not isCancel then
         pb:setGravityEnable(true)
         pb:setVelocity(cc.pMul(dir, DOTS[self.face].vel))
         pb:setAngularVelocity(10)
