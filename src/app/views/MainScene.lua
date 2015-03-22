@@ -76,18 +76,30 @@ function MainScene:onCreate()
     for i = 1, 10 do
         display.newSprite("dots/" .. (i % 2 == 0 and "shobon" or "shakin") .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
     end
+    scrollView:getChildren()[1]:setScale(2)
+    local currentIdx = function()
+        return math.floor((bgSize.width / 2 - scrollView:getInnerContainer():getPositionX() - (bgSize.width / 2 - 32)) / 64) + 1
+    end
+    local commitDot = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):hide():onClicked(function()
+        print("commit")
+    end)
     scrollView:addTouchEventListener(function(sender, state)
         if state == ccui.TouchEventType.began then
             scrollView:setInertiaScrollEnabled(true)
-        elseif state ~= ccui.TouchEventType.moved then
+        elseif state == ccui.TouchEventType.moved then
+            commitDot:hide()
+        else
             local prevPos = 0
             dotsLayer:scheduleUpdate(function()
                 local currentPos = scrollView:getInnerContainer():getPositionX()
                 if currentPos == prevPos then
                     scrollView:setInertiaScrollEnabled(false)
-                    local i = math.floor((bgSize.width / 2 - currentPos - (bgSize.width / 2 - 32)) / 64)
+                    local i = currentIdx() - 1
                     local x = -i * 64
                     scrollView:getInnerContainer():setPositionX(x)
+                    for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
+                    scrollView:getChildren()[i + 1]:setScale(2)
+                    commitDot:show()
                     dotsLayer:unscheduleUpdate()
                 end
                 prevPos = currentPos
@@ -96,14 +108,27 @@ function MainScene:onCreate()
     end)
     scrollView:addEventListener(function(e, t)
         if t == ccui.ScrollviewEventType.scrolling then
+            for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
+            local i = currentIdx()
+            local dots = scrollView:getChildren()
+            i = math.max(math.min(i, #dots), 1)
+            dots[i]:setScale(2)
         end
     end)
-    cc.Menu:create(cc.MenuItemImage:create("dots.png", "dots.png"):align(cc.p(0, 0), display.left + 10, 10):onClicked(function()
+    self.dotsMenu = cc.Menu:create(commitDot, cc.MenuItemImage:create("dots.png", "dots.png"):align(cc.p(0, 0), display.left + 10, 10):onClicked(function()
         if self.hand then
             self.hand:removeSelf()
             self.hand = nil
         end
-        dotsLayer:show()
+        if dotsLayer:isVisible() then
+            dotsLayer:hide()
+            commitDot:hide()
+            self.bg:onTouch(handler(self, self.onTouch))
+        else
+            dotsLayer:show()
+            commitDot:show()
+            self.bg:removeTouch()
+        end
     end)):move(0, 0):addTo(self)
 
     local handPos = cc.p(display.cx + 50, display.cy + 50 - 100)
@@ -293,6 +318,9 @@ function MainScene:resetDot()
         end
     end
     for _, e in ipairs(self.shadows:getChildren()) do e:removeSelf() end
+    if self.score.value == 0 then
+        self.dotsMenu:show()
+    end
 end
 
 function MainScene:onTouch(event)
@@ -316,6 +344,7 @@ function MainScene:onTouch(event)
         pb:setVelocity(cc.pMul(dir, DOTS[self.face].vel))
         pb:setAngularVelocity(10)
         self.arrow:hide()
+        self.dotsMenu:hide()
         self.hit = false
         self.shadowCounter = 0
         self:scheduleUpdate(handler(self, self.step))
