@@ -263,8 +263,20 @@ function MainScene:dead(y)
         shadows[#shadows]:removeSelf()
     end
     local die = function() return cc.Spawn:create(cc.FadeTo:create(0.5, 127), cc.MoveBy:create(0.5, cc.p(0, 24))) end
-    display.newSprite("dots/" .. self.face .. ".png", self.dot:getPositionX(), y):addTo(self.shadows):runAction(cc.Sequence:create(die(), cc.CallFunc:create(handler(self, self.showResult))))
-    self.ring = display.newSprite("ring.png", self.dot:getPositionX(), y + rad):addTo(self.mainNode)
+    local x = self.dot:getPositionX()
+    if x > display.right then
+        local balloon = display.newSprite("balloon.png"):align(cc.p(1, 0), display.right, y):addTo(self.shadows)
+        x = display.right - balloon:getContentSize().width / 2 - 8
+        y = y + balloon:getContentSize().height / 2 - 24
+    elseif x < 0 then
+        local balloon = display.newSprite("balloon.png"):addTo(self.shadows)
+        balloon:move(balloon:getContentSize().width / 2, balloon:getContentSize().height / 2 + y)
+        balloon:setScaleX(-1)
+        x = balloon:getContentSize().width / 2 + 8
+        y = y + balloon:getContentSize().height / 2 - 24
+    end
+    display.newSprite("dots/" .. self.face .. ".png", x, y):addTo(self.shadows):runAction(cc.Sequence:create(die(), cc.CallFunc:create(handler(self, self.showResult))))
+    self.ring = display.newSprite("ring.png", x, y + rad):addTo(self.mainNode)
     self.ring:runAction(cc.Sequence:create(die()))
     self.shareMenu:show()
     audio.playSound("ob.mp3")
