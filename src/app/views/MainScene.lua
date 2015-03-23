@@ -78,13 +78,14 @@ function MainScene:onCreate()
     scrollView:setDirection(ccui.ScrollViewDir.horizontal)
     scrollView:setTouchEnabled(true)
     scrollView:setContentSize(bgSize)
-    scrollView:setInnerContainerSize(cc.size(64 * 10 + bgSize.width - 64, bgSize.height))
+    scrollView:setInnerContainerSize(cc.size(64 * #table.keys(DOTS) + bgSize.width - 64, bgSize.height))
     for i, e in ipairs(table.keys(DOTS)) do
         display.newSprite("dots/" .. e .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
     end
     scrollView:getChildren()[1]:setScale(2)
     local currentIdx = function()
-        return math.floor((bgSize.width / 2 - scrollView:getInnerContainer():getPositionX() - (bgSize.width / 2 - 32)) / 64) + 1
+        local idx = math.floor((bgSize.width / 2 - scrollView:getInnerContainer():getPositionX() - (bgSize.width / 2 - 32)) / 64) + 1
+        return math.max(1, math.min(#table.keys(DOTS), idx))
     end
     local commitDot = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):hide()
     local closeDots = function()
@@ -126,10 +127,7 @@ function MainScene:onCreate()
     scrollView:addEventListener(function(e, t)
         if t == ccui.ScrollviewEventType.scrolling then
             for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
-            local i = currentIdx()
-            local dots = scrollView:getChildren()
-            i = math.max(math.min(i, #dots), 1)
-            dots[i]:setScale(2)
+            scrollView:getChildren()[currentIdx()]:setScale(2)
         end
     end)
     self.dotsMenu = cc.Menu:create(commitDot, cc.MenuItemImage:create("dots.png", "dots.png"):align(cc.p(0, 0), display.left + 10, 10):onClicked(function()
