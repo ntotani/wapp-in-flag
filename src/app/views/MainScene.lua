@@ -7,6 +7,7 @@ local MAX_BUMPER = 10
 local COIN_APPERE_RATE = 10
 local COIN_PER_LOT = 100
 local COIN_PER_REWARD = 100
+local TIME_OUT_SEC = 5
 
 local DOTS = {
     {name = "shobon", vel = 800, gra = 980},
@@ -195,24 +196,7 @@ end
 function MainScene:step(delta)
     local rad = self.dot:getContentSize().height / 2
     if self.dot:getPositionY() - rad < 0 then
-        self:unscheduleUpdate()
-        self.dot:setPositionY(rad)
-        self.dot:setRotation(0)
-        local pb = self.dot:getPhysicsBody()
-        pb:setVelocity(cc.p(0, 0))
-        pb:setAngularVelocity(0)
-        pb:setGravityEnable(false)
-        local die = function() return cc.Spawn:create(cc.FadeTo:create(0.5, 127), cc.MoveBy:create(0.5, cc.p(0, 10))) end
-        self.ring = display.newSprite("ring.png", self.dot:getPositionX(), self.dot:getPositionY() + rad):addTo(self.mainNode)
-        self.dot:runAction(cc.Sequence:create(die(), cc.CallFunc:create(handler(self, self.showResult))))
-        self.ring:runAction(cc.Sequence:create(die()))
-        local shadows = self.shadows:getChildren()
-        for _, e in ipairs(shadows) do e:stopAllActions() end
-        if cc.rectIntersectsRect(shadows[#shadows]:getBoundingBox(), self.dot:getBoundingBox()) then
-            shadows[#shadows]:removeSelf()
-        end
-        self.shareMenu:show()
-        audio.playSound("ob.mp3")
+        self:dead(rad)
         return
     elseif cc.pDistanceSQ(cc.p(self.dot:getPosition()), cc.p(self.flag:getPosition())) <= 4 * rad * rad and not self.hit then
         self.hit = true
@@ -257,6 +241,33 @@ function MainScene:step(delta)
             display.newSprite("dots/" .. self.face .. ".png"):move(self.dot:getPosition()):rotate(self.dot:getRotation()):addTo(self.shadows):runAction(cc.Sequence:create(cc.FadeOut:create(2), cc.RemoveSelf:create()))
         end
     end
+    if self.timeoutCounter ~= -1 then
+        self.timeoutCounter = self.timeoutCounter + delta
+        if self.timeoutCounter > TIME_OUT_SEC then
+            self.timeoutCounter = -1
+            local menu = nil
+            menu = cc.Menu:create(cc.MenuItemImage:create("kill.png", "kill.png"):move(display.cx, display.cy / 2):onClicked(function()
+                menu:removeSelf()
+                self:dead(self.dot:getPositionY())
+            end)):move(0, 0):addTo(self)
+        end
+    end
+end
+
+function MainScene:dead(y)
+    local rad = self.dot:getContentSize().height / 2
+    self:unscheduleUpdate()
+    local shadows = self.shadows:getChildren()
+    for _, e in ipairs(shadows) do e:stopAllActions() end
+    if cc.rectIntersectsRect(shadows[#shadows]:getBoundingBox(), self.dot:getBoundingBox()) then
+        shadows[#shadows]:removeSelf()
+    end
+    local die = function() return cc.Spawn:create(cc.FadeTo:create(0.5, 127), cc.MoveBy:create(0.5, cc.p(0, 24))) end
+    display.newSprite("dots/" .. self.face .. ".png", self.dot:getPositionX(), y):addTo(self.shadows):runAction(cc.Sequence:create(die(), cc.CallFunc:create(handler(self, self.showResult))))
+    self.ring = display.newSprite("ring.png", self.dot:getPositionX(), y + rad):addTo(self.mainNode)
+    self.ring:runAction(cc.Sequence:create(die()))
+    self.shareMenu:show()
+    audio.playSound("ob.mp3")
 end
 
 function MainScene:updateCoin(val)
@@ -434,6 +445,7 @@ function MainScene:onTouch(event)
         self.dotsMenu:hide()
         self.hit = false
         self.shadowCounter = 0
+        self.timeoutCounter = 0
         self.bg:removeTouch()
         self:scheduleUpdate(handler(self, self.step))
         audio.playSound("shot.mp3")
