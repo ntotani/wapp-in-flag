@@ -7,19 +7,34 @@ local MAX_BUMPER = 10
 local COIN_APPERE_RATE = 10
 
 local DOTS = {
-    shobon = {vel = 800, gra = 980},
-    kita = {vel = 800, gra = 980},
-    monyu = {vel = 800, gra = 980},
-    owata = {vel = 800, gra = 980},
-    pokan = {vel = 800, gra = 980},
-    shakin = {vel = 1600, gra = 1960}
+    {name = "shobon", vel = 800, gra = 980},
+    {name = "kita", vel = 800, gra = 980},
+    {name = "monyu", vel = 800, gra = 980},
+    {name = "owata", vel = 800, gra = 980},
+    {name = "pokan", vel = 800, gra = 980},
+    {name = "shakin", vel = 1600, gra = 1960}
 }
+local DOTS_HASH = {}
+for _, e in ipairs(DOTS) do DOTS_HASH[e.name] = e end
 
 function MainScene:onCreate()
+    self:initMainNode()
+    self:initScores()
+    self:initResults()
+    self:initDots()
+    self:resetDot()
+    local cl = cc.EventListenerPhysicsContact:create()
+    cl:registerScriptHandler(handler(self, self.onContactBegin), cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
+    cl:registerScriptHandler(handler(self, self.onContactPresolve), cc.Handler.EVENT_PHYSICS_CONTACT_PRESOLVE)
+    cl:registerScriptHandler(handler(self, self.onContactPostsolve), cc.Handler.EVENT_PHYSICS_CONTACT_POSTSOLVE)
+    cl:registerScriptHandler(handler(self, self.onContactSeparate), cc.Handler.EVENT_PHYSICS_CONTACT_SEPERATE)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cl, self)
+end
+
+function MainScene:initMainNode()
     self.mainNode = display.newNode():addTo(self)
     self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):addTo(self.mainNode)
     display.newSprite("bg.png"):move(display.center):addTo(self.mainNode)
-
     self.tee = display.newSprite("grass.png"):addTo(self.mainNode)
     self.green = display.newSprite("grass.png"):addTo(self.mainNode)
     self.green:setPhysicsBody(cc.PhysicsBody:createBox(self.green:getContentSize(), {density = 0.1, restitution = 0.5, friction = 0.5}, cc.p(0, 0)))
@@ -28,9 +43,7 @@ function MainScene:onCreate()
     self.bumpers = display.newLayer():addTo(self.mainNode)
     self.coins = display.newLayer():addTo(self.mainNode)
     self.shadows = display.newLayer():addTo(self.mainNode)
-
     self.face = "shobon"
-
     -- cc.PHYSICSSHAPE_MATERIAL_DEFAULT = {density = 0.0, restitution = 0.5, friction = 0.5}
     -- cc.PHYSICSBODY_MATERIAL_DEFAULT = {density = 0.1, restitution = 0.5, friction = 0.5}
     self.dot = display.newSprite("dots/" .. self.face .. ".png", 32, 96)
@@ -40,29 +53,40 @@ function MainScene:onCreate()
     pb:setContactTestBitmask(1)
     self.dot:setPhysicsBody(pb)
     self.dot:addTo(self.mainNode)
-
     self.pin = display.newSprite("pin.png"):addTo(self.mainNode)
     self.flag = display.newSprite("flag.png"):addTo(self.mainNode)
     self.box = display.newSprite("box.png"):hide():addTo(self.mainNode)
+    local handPos = cc.p(display.cx + 50, display.cy + 50 - 100)
+    self.hand = display.newSprite("hand.png"):move(handPos):addTo(self)
+    self.hand:runAction(cc.RepeatForever:create(cc.Sequence:create(
+        cc.DelayTime:create(0.5),
+        cc.MoveBy:create(0.5, cc.p(-100, -100)),
+        cc.DelayTime:create(0.5),
+        cc.CallFunc:create(function() self.hand:setVisible(false) end),
+        cc.DelayTime:create(0.5),
+        cc.CallFunc:create(function() self.hand:move(handPos):setVisible(true) end)
+    )))
+end
 
+function MainScene:initScores()
     self.score = cc.Label:createWithSystemFont("0", "Arial", 32):move(display.cx, display.top - 100)
     self.score:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.score.value = 0
     self.score:addTo(self.mainNode)
-
     local coinValue = cc.UserDefault:getInstance():getIntegerForKey("coin", 0)
     self.coin = cc.Label:createWithSystemFont(coinValue, "Arial", 20):align(cc.p(1, 1), display.right - 10, display.top - 10):addTo(self.mainNode)
     self.coin:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.coin.value = coinValue
     self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self.mainNode)
+end
 
+function MainScene:initResults()
     self.resultLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
     self.screenShot = cc.RenderTexture:create(display.width, display.height, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
     self.screenShot:setScale(0.5)
     self.screenShot:retain()
-    local dotsLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide()
     self.shareMenu = cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
-        if dotsLayer:isVisible() then return end
+        if self.dotsLayer:isVisible() then return end
         local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
         self.screenShot:newImage():saveToFile(name)
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "share", {
@@ -70,34 +94,37 @@ function MainScene:onCreate()
             image = name
         })
     end)):move(0, 0):addTo(self):hide()
-    dotsLayer:addTo(self)
-    local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(dotsLayer)
+end
+
+function MainScene:initDots()
+    self.dotsLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
+    local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.dotsLayer)
     local bgSize = dotsBg:getContentSize()
-    local scrollView = ccui.ScrollView:create():move(display.cx - bgSize.width / 2, display.cy - bgSize.height / 2):addTo(dotsLayer)
+    local scrollView = ccui.ScrollView:create():move(display.cx - bgSize.width / 2, display.cy - bgSize.height / 2):addTo(self.dotsLayer)
     scrollView:setBounceEnabled(true)
     scrollView:setDirection(ccui.ScrollViewDir.horizontal)
     scrollView:setTouchEnabled(true)
     scrollView:setContentSize(bgSize)
-    scrollView:setInnerContainerSize(cc.size(64 * #table.keys(DOTS) + bgSize.width - 64, bgSize.height))
-    for i, e in ipairs(table.keys(DOTS)) do
-        display.newSprite("dots/" .. e .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
+    scrollView:setInnerContainerSize(cc.size(64 * #DOTS + bgSize.width - 64, bgSize.height))
+    for i, e in ipairs(DOTS) do
+        display.newSprite("dots/" .. e.name .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
     end
     scrollView:getChildren()[1]:setScale(2)
     local currentIdx = function()
         local idx = math.floor((bgSize.width / 2 - scrollView:getInnerContainer():getPositionX() - (bgSize.width / 2 - 32)) / 64) + 1
-        return math.max(1, math.min(#table.keys(DOTS), idx))
+        return math.max(1, math.min(#DOTS, idx))
     end
     local commitDot = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):hide()
     local closeDots = function()
-        dotsLayer:hide()
+        self.dotsLayer:hide()
         commitDot:hide()
         self.bg:onTouch(handler(self, self.onTouch))
     end
     commitDot:onClicked(function()
         local idx = currentIdx()
-        self.face = table.keys(DOTS)[idx]
+        self.face = DOTS[idx].name
         self.dot:setTexture("dots/" .. self.face .. ".png")
-        cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS[self.face].gra))
+        cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS_HASH[self.face].gra))
         closeDots()
         self:resetDot()
     end)
@@ -108,7 +135,7 @@ function MainScene:onCreate()
             commitDot:hide()
         else
             local prevPos = 0
-            dotsLayer:scheduleUpdate(function()
+            self.dotsLayer:scheduleUpdate(function()
                 local currentPos = scrollView:getInnerContainer():getPositionX()
                 if currentPos == prevPos then
                     scrollView:setInertiaScrollEnabled(false)
@@ -118,7 +145,7 @@ function MainScene:onCreate()
                     for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
                     scrollView:getChildren()[i + 1]:setScale(2)
                     commitDot:show()
-                    dotsLayer:unscheduleUpdate()
+                    self.dotsLayer:unscheduleUpdate()
                 end
                 prevPos = currentPos
             end)
@@ -135,34 +162,14 @@ function MainScene:onCreate()
             self.hand:removeSelf()
             self.hand = nil
         end
-        if dotsLayer:isVisible() then
+        if self.dotsLayer:isVisible() then
             closeDots()
         else
-            dotsLayer:show()
+            self.dotsLayer:show()
             commitDot:show()
             self.bg:removeTouch()
         end
     end)):move(0, 0):addTo(self)
-
-    local handPos = cc.p(display.cx + 50, display.cy + 50 - 100)
-    self.hand = display.newSprite("hand.png"):move(handPos):addTo(self)
-    self.hand:runAction(cc.RepeatForever:create(cc.Sequence:create(
-        cc.DelayTime:create(0.5),
-        cc.MoveBy:create(0.5, cc.p(-100, -100)),
-        cc.DelayTime:create(0.5),
-        cc.CallFunc:create(function() self.hand:setVisible(false) end),
-        cc.DelayTime:create(0.5),
-        cc.CallFunc:create(function() self.hand:move(handPos):setVisible(true) end)
-    )))
-
-    self:resetDot()
-
-    local cl = cc.EventListenerPhysicsContact:create()
-    cl:registerScriptHandler(handler(self, self.onContactBegin), cc.Handler.EVENT_PHYSICS_CONTACT_BEGIN)
-    cl:registerScriptHandler(handler(self, self.onContactPresolve), cc.Handler.EVENT_PHYSICS_CONTACT_PRESOLVE)
-    cl:registerScriptHandler(handler(self, self.onContactPostsolve), cc.Handler.EVENT_PHYSICS_CONTACT_POSTSOLVE)
-    cl:registerScriptHandler(handler(self, self.onContactSeparate), cc.Handler.EVENT_PHYSICS_CONTACT_SEPERATE)
-    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cl, self)
 end
 
 function MainScene:showWithScene(transition, time, more)
@@ -263,8 +270,8 @@ function MainScene:showResult()
 end
 
 function MainScene:resetDot()
-    local gravity = -DOTS[self.face].gra
-    local dotVel = DOTS[self.face].vel
+    local gravity = -DOTS_HASH[self.face].gra
+    local dotVel = DOTS_HASH[self.face].vel
     local angle1, angle2, dotY, flagY = -1, -1, 0, 0
     while angle1 == -1 or angle2 == -1 do
         dotY = math.random(100, display.top - 100)
@@ -352,7 +359,7 @@ function MainScene:onTouch(event)
         end
     elseif event.name == "ended" and not isCancel then
         pb:setGravityEnable(true)
-        pb:setVelocity(cc.pMul(dir, DOTS[self.face].vel))
+        pb:setVelocity(cc.pMul(dir, DOTS_HASH[self.face].vel))
         pb:setAngularVelocity(10)
         self.arrow:hide()
         self.dotsMenu:hide()
