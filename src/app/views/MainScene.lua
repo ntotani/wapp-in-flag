@@ -5,7 +5,8 @@ local MainScene = class("MainScene", cc.load("mvc").ViewBase)
 local teeX, greenX = 15, 325
 local MAX_BUMPER = 10
 local COIN_APPERE_RATE = 10
-local COIN_PER_LOT = 1
+local COIN_PER_LOT = 100
+local COIN_PER_REWARD = 100
 
 local DOTS = {
     {name = "shobon", vel = 800, gra = 980},
@@ -269,8 +270,7 @@ function MainScene:showResult()
     self.screenShot:begin()
     self.mainNode:visit()
     self.screenShot:endToLua()
-    self.screenShot:addTo(self.resultLayer)
-    local retry = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, 45):onClicked(function()
+    local menu = cc.Menu:create(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, 45):onClicked(function()
         for _, e in ipairs(self.resultLayer:getChildren()) do e:removeSelf() end
         self.resultLayer:hide()
         self.score.value = 0
@@ -278,8 +278,21 @@ function MainScene:showResult()
         self.ring:removeSelf()
         self.dot:setOpacity(255)
         self:resetDot()
-    end)
-    cc.Menu:create(retry):move(0, 0):addTo(self.resultLayer)
+    end)):move(0, 0)
+    if math.random() > 0.5 then
+        self.screenShot:addTo(self.resultLayer)
+    else
+        local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.resultLayer)
+        menu:addChild(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
+            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reward", {callback = function(success)
+                if success then
+                    self:updateCoin(COIN_PER_REWARD)
+                    dotsBg:removeSelf()
+                end
+            end})
+        end))
+    end
+    menu:addTo(self.resultLayer)
     if self.coin.value < COIN_PER_LOT then
         self.resultLayer:show()
         return

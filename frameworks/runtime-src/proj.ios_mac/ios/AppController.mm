@@ -30,6 +30,7 @@
 #import "AppDelegate.h"
 #import "RootViewController.h"
 #import "platform/ios/CCEAGLView-ios.h"
+#import "CCLuaBridge.h"
 
 @implementation AppController
 
@@ -39,9 +40,14 @@
 // cocos2d application instance
 static AppDelegate s_sharedApplication;
 static RootViewController *s_rootViewController;
+static int s_adCallbackID;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [AdColony configureWithAppID: @"appcc91c8db46e0439a83"
+                         zoneIDs: @[@"vze85d3eca448840c181"]
+                        delegate: self
+                         logging: YES];
 
     cocos2d::Application *app = cocos2d::Application::getInstance();
     app->initGLContextAttrs();
@@ -149,6 +155,22 @@ static RootViewController *s_rootViewController;
 {
     UIActivityViewController *av = [[UIActivityViewController alloc] initWithActivityItems:@[args[@"text"], [UIImage imageWithContentsOfFile:args[@"image"]]] applicationActivities:nil];
     [s_rootViewController presentViewController:av animated:YES completion:nil];
+}
+
++ (void)reward:(NSDictionary*)args {
+    s_adCallbackID = [args[@"callback"] intValue];
+    [AdColony playVideoAdForZone:@"vze85d3eca448840c181"
+                    withDelegate:nil
+                withV4VCPrePopup:NO
+                andV4VCPostPopup:NO];
+}
+
+- (void)onAdColonyV4VCReward:(BOOL)success currencyName:(NSString*)currencyName currencyAmount:(int)amount inZone:(NSString*)zoneID {
+    cocos2d::LuaBridge::pushLuaFunctionById(s_adCallbackID);
+    cocos2d::LuaStack *stack = cocos2d::LuaBridge::getStack();
+    stack->pushBoolean(success);
+    stack->executeFunction(1);
+    cocos2d::LuaBridge::releaseLuaFunctionById(s_adCallbackID);
 }
 
 @end
