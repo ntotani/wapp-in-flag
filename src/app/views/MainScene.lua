@@ -8,6 +8,10 @@ local COIN_APPERE_RATE = 10
 
 local DOTS = {
     shobon = {vel = 800, gra = 980},
+    kita = {vel = 800, gra = 980},
+    monyu = {vel = 800, gra = 980},
+    owata = {vel = 800, gra = 980},
+    pokan = {vel = 800, gra = 980},
     shakin = {vel = 1600, gra = 1960}
 }
 
@@ -75,15 +79,26 @@ function MainScene:onCreate()
     scrollView:setTouchEnabled(true)
     scrollView:setContentSize(bgSize)
     scrollView:setInnerContainerSize(cc.size(64 * 10 + bgSize.width - 64, bgSize.height))
-    for i = 1, 10 do
-        display.newSprite("dots/" .. (i % 2 == 0 and "shobon" or "shakin") .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
+    for i, e in ipairs(table.keys(DOTS)) do
+        display.newSprite("dots/" .. e .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
     end
     scrollView:getChildren()[1]:setScale(2)
     local currentIdx = function()
         return math.floor((bgSize.width / 2 - scrollView:getInnerContainer():getPositionX() - (bgSize.width / 2 - 32)) / 64) + 1
     end
-    local commitDot = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):hide():onClicked(function()
-        print("commit")
+    local commitDot = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):hide()
+    local closeDots = function()
+        dotsLayer:hide()
+        commitDot:hide()
+        self.bg:onTouch(handler(self, self.onTouch))
+    end
+    commitDot:onClicked(function()
+        local idx = currentIdx()
+        self.face = table.keys(DOTS)[idx]
+        self.dot:setTexture("dots/" .. self.face .. ".png")
+        cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS[self.face].gra))
+        closeDots()
+        self:resetDot()
     end)
     scrollView:addTouchEventListener(function(sender, state)
         if state == ccui.TouchEventType.began then
@@ -123,9 +138,7 @@ function MainScene:onCreate()
             self.hand = nil
         end
         if dotsLayer:isVisible() then
-            dotsLayer:hide()
-            commitDot:hide()
-            self.bg:onTouch(handler(self, self.onTouch))
+            closeDots()
         else
             dotsLayer:show()
             commitDot:show()
@@ -252,13 +265,6 @@ function MainScene:showResult()
 end
 
 function MainScene:resetDot()
-
-    local faces = table.keys(DOTS)
-    self.face = faces[math.random(1, #faces)]
-    self.dot:setTexture("dots/" .. self.face .. ".png")
-    local pw = cc.Director:getInstance():getRunningScene():getPhysicsWorld()
-    if pw then pw:setGravity(cc.p(0, -DOTS[self.face].gra)) end
-
     local gravity = -DOTS[self.face].gra
     local dotVel = DOTS[self.face].vel
     local angle1, angle2, dotY, flagY = -1, -1, 0, 0
@@ -309,7 +315,7 @@ function MainScene:resetDot()
         bumper:setPhysicsBody(bumperPb)
     end
     for _, e in ipairs(self.coins:getChildren()) do e:removeSelf() end
-    if math.random(1, 100) <= COIN_APPERE_RATE then
+    if self.score.value > 0 and math.random(1, 100) <= COIN_APPERE_RATE then
         local t = safeTime * (0.1 + 0.8 * math.random())
         local x = teeX + safeVel.x * t
         local y = dotY + safeVel.y * t + gravity / 2 * t * t
