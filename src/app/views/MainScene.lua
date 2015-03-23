@@ -106,8 +106,13 @@ function MainScene:initDots()
     scrollView:setTouchEnabled(true)
     scrollView:setContentSize(bgSize)
     scrollView:setInnerContainerSize(cc.size(64 * #DOTS + bgSize.width - 64, bgSize.height))
+    local dotsFlags = cc.UserDefault:getInstance():getIntegerForKey("dots", 1)
+    local hasDot = function(i) return bit.band(dotsFlags, bit.lshift(1, i - 1)) > 0 end
     for i, e in ipairs(DOTS) do
-        display.newSprite("dots/" .. e.name .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
+        local dot = display.newSprite("dots/" .. e.name .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
+        if not hasDot(i) then
+            dot:setColor(cc.c3b(63, 63, 63))
+        end
     end
     scrollView:getChildren()[1]:setScale(2)
     local currentIdx = function()
@@ -139,12 +144,14 @@ function MainScene:initDots()
                 local currentPos = scrollView:getInnerContainer():getPositionX()
                 if currentPos == prevPos then
                     scrollView:setInertiaScrollEnabled(false)
-                    local i = currentIdx() - 1
-                    local x = -i * 64
+                    local i = currentIdx()
+                    local x = -64 * (i - 1)
                     scrollView:getInnerContainer():setPositionX(x)
                     for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
-                    scrollView:getChildren()[i + 1]:setScale(2)
-                    commitDot:show()
+                    scrollView:getChildren()[i]:setScale(2)
+                    if hasDot(i) then
+                        commitDot:show()
+                    end
                     self.dotsLayer:unscheduleUpdate()
                 end
                 prevPos = currentPos
