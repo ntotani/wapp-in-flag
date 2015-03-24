@@ -10,12 +10,12 @@ local COIN_PER_REWARD = 100
 local TIME_OUT_SEC = 5
 
 local DOTS = {
-    {name = "shobon", vel = 800, gra = 980, res = 0.5},
-    {name = "kita",   vel = 800, gra = 980, res = 2},
-    {name = "monyu",  vel = 800, gra = 980, res = 0.5},
-    {name = "owata",  vel = 800, gra = 980, res = 0.5},
-    {name = "pokan",  vel = 800, gra = 980, res = 0.5},
-    {name = "shakin", vel = 1600, gra = 1960, res = 0.5}
+    {name = "shobon", vel = 800, gra = 980, res = 0.5, face = "(´・ω・｀)", dead = "(´・ω...:.;::.."},
+    {name = "kita",   vel = 800, gra = 980, res = 0.5, face = "(ﾟ∀ﾟ)", dead = "(ﾟ∀...:.;::.."},
+    {name = "monyu",  vel = 800, gra = 980, res = 0.5, face = "(*´ω｀*)", dead = "(*´ω...:.;::.."},
+    {name = "owata",  vel = 800, gra = 980, res = 0.5, face = "＼(^o^)／", dead = "＼(^o^)／"},
+    {name = "pokan",  vel = 800, gra = 980, res = 0.5, face = "( ﾟдﾟ)", dead = "( ﾟд...:.;::.."},
+    {name = "shakin", vel = 1600, gra = 1960, res = 0.5, face = "(｀・ω・´)", dead = "(｀・ω...:.;::.."}
 }
 local DOTS_HASH = {}
 for _, e in ipairs(DOTS) do DOTS_HASH[e.name] = e end
