@@ -32,6 +32,9 @@ function MainScene:onCreate()
     cl:registerScriptHandler(handler(self, self.onContactPostsolve), cc.Handler.EVENT_PHYSICS_CONTACT_POSTSOLVE)
     cl:registerScriptHandler(handler(self, self.onContactSeparate), cc.Handler.EVENT_PHYSICS_CONTACT_SEPERATE)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cl, self)
+    if cc.UserDefault:getInstance():getIntegerForKey("review", 0) == 0 then
+        cc.UserDefault:getInstance():setIntegerForKey("review", os.time() + 60 * 60 * 24) -- require review tomorrow
+    end
 end
 
 function MainScene:initMainNode()
@@ -329,24 +332,51 @@ function MainScene:showResult()
         self.dot:setOpacity(255)
         self:resetDot()
     end)):move(0, 0)
-    if math.random() > 0.5 then
-        self.screenShot:move(display.right - 10, 10):addTo(self.resultLayer):setScale(0)
-        self.screenShot:runAction(cc.Spawn:create(cc.ScaleTo:create(0.2, 0.5), cc.MoveTo:create(0.2, display.center)))
-    else
-        local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.resultLayer)
-        menu:addChild(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
-            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reward", {callback = function(success)
-                if success then
-                    self:updateCoin(COIN_PER_REWARD)
-                    dotsBg:removeSelf()
-                end
-            end})
-        end))
+    if not self:checkLottery() then
+        local features = {"none", "share"}
+        if cc.UserDefault:getInstance():getIntegerForKey("reward", 0) < os.time() then
+            table.insert(features, "reward")
+        end
+        local reviewState = cc.UserDefault:getInstance():getIntegerForKey("review", 0)
+        if reviewState ~= -1 and os.time() > reviewState then
+            table.insert(features, "review")
+        end
+        local feature = features[math.random(1, #features)]
+        if feature == "share" then
+            self.screenShot:move(display.right - 10, 10):addTo(self.resultLayer):setScale(0)
+            self.screenShot:runAction(cc.Spawn:create(cc.ScaleTo:create(0.2, 0.5), cc.MoveTo:create(0.2, display.center)))
+        elseif feature == "reward" then
+            local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.resultLayer)
+            local rewardBtn = nil
+            rewardBtn = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
+                require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reward", {callback = function(success)
+                    if success then
+                        self:updateCoin(COIN_PER_REWARD)
+                        cc.UserDefault:getInstance():setIntegerForKey("reward", os.time() + 60 * 72) -- AdColony can only 20 in day
+                        dotsBg:removeSelf()
+                        rewardBtn:removeSelf()
+                        if self:checkLottery() then
+                            self.resultLayer:hide()
+                        end
+                    end
+                end})
+            end)
+            menu:addChild(rewardBtn)
+        elseif feature == "review" then
+            local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.resultLayer)
+            menu:addChild(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
+                cc.UserDefault:getInstance():setIntegerForKey("review", -1)
+                cc.Application:getInstance():openURL("http://google.com")
+            end))
+        end
+        self.resultLayer:show()
     end
     menu:addTo(self.resultLayer)
+end
+
+function MainScene:checkLottery()
     if self.coin.value < COIN_PER_LOT then
-        self.resultLayer:show()
-        return
+        return false
     end
     local dotsFlags = cc.UserDefault:getInstance():getIntegerForKey("dots", 1)
     local newDots = {}
@@ -356,8 +386,7 @@ function MainScene:showResult()
         end
     end
     if #newDots == 0 then
-        self.resultLayer:show()
-        return
+        return false
     end
     local lottery = display.newLayer(cc.c4b(0, 0, 0, 63)):addTo(self)
     local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(lottery)
@@ -373,6 +402,9 @@ function MainScene:showResult()
         dot:setColor(cc.c3b(255, 255, 255))
         lottery:unscheduleUpdate()
         commit:onClicked(function()
+            self.face = DOTS[newDots[lot]].name
+            self.dot:setTexture("dots/" .. self.face .. ".png")
+            cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS_HASH[self.face].gra))
             lottery:removeSelf()
             self.resultLayer:show()
         end)
@@ -383,10 +415,12 @@ function MainScene:showResult()
         counter = counter + dt
         if counter > 0.1 then
             counter = 0
-            lot = (lot + 1) % #newDots + 1
+            lot = lot + 1
+            if lot > #newDots then lot = 1 end
             dot:setTexture("dots/" .. DOTS[newDots[lot]].name .. ".png")
         end
     end)
+    return true
 end
 
 function MainScene:resetDot()
@@ -413,7 +447,6 @@ function MainScene:resetDot()
     local safeAngle = math.random(1, 2) == 1 and angle1 or angle2
     local now = os.time()
     local fever = cc.UserDefault:getInstance():getIntegerForKey("fever", now)
-    print(now, fever)
     if now > fever then
         self.feverCount = 7
         safeAngle = angle1
