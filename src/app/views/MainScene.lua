@@ -396,12 +396,15 @@ function MainScene:checkLottery()
     local dot = display.newSprite("dots/" .. DOTS[newDots[lot]].name .. ".png"):move(display.center):addTo(lottery)
     dot:setColor(cc.c3b(63, 63, 63))
     dot:setScale(2)
+    local effect = display.newSprite("lottery.png"):move(display.center):addTo(lottery)
+    effect:setScale(0)
     local commit = nil
     commit = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
         self:updateCoin(-COIN_PER_LOT)
         dotsFlags = bit.bor(dotsFlags, bit.lshift(1, newDots[lot] - 1))
         cc.UserDefault:getInstance():setIntegerForKey("dots", dotsFlags)
         dot:setColor(cc.c3b(255, 255, 255))
+        effect:scaleTo({time = 0.1, scale = 1})
         lottery:unscheduleUpdate()
         commit:onClicked(function()
             self.face = DOTS[newDots[lot]].name
@@ -410,6 +413,7 @@ function MainScene:checkLottery()
             lottery:removeSelf()
             self.resultLayer:show()
         end)
+        audio.playSound("lottery.mp3")
     end)
     cc.Menu:create(commit):move(0, 0):addTo(lottery)
     local counter = 0
@@ -422,6 +426,7 @@ function MainScene:checkLottery()
             dot:setTexture("dots/" .. DOTS[newDots[lot]].name .. ".png")
         end
     end)
+    audio.playSound("drumroll.mp3")
     return true
 end
 
