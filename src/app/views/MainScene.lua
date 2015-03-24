@@ -42,6 +42,7 @@ function MainScene:initMainNode()
     self.green = display.newSprite("grass.png"):addTo(self.mainNode)
     self.green:setPhysicsBody(cc.PhysicsBody:createBox(self.green:getContentSize(), {density = 0.1, restitution = 0.5, friction = 0.5}, cc.p(0, 0)))
     self.green:getPhysicsBody():setDynamic(false)
+    self.green:getPhysicsBody():setContactTestBitmask(2)
     self.arrow = display.newSprite("arrow.png"):hide():addTo(self.mainNode)
     self.bumpers = display.newLayer():addTo(self.mainNode)
     self.coins = display.newLayer():addTo(self.mainNode)
@@ -88,7 +89,6 @@ end
 function MainScene:initResults()
     self.resultLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
     self.screenShot = cc.RenderTexture:create(display.width, display.height, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
-    self.screenShot:setScale(0.5)
     self.screenShot:retain()
     self.shareMenu = cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
         if self.dotsLayer:isVisible() then return end
@@ -231,6 +231,23 @@ function MainScene:step(delta)
         self:runAction(cc.CallFunc:create(function()
             self:resetDot()
         end))
+        if self.physicsContact then
+            local d = 0.1
+            display.newLayer(cc.c4b(255, 255, 255, 127)):addTo(self):runAction(cc.Sequence:create(
+                cc.DelayTime:create(d),
+                cc.RemoveSelf:create()
+            ))
+            self.screenShot:move(display.center):setScale(1)
+            self.screenShot:addTo(self.mainNode):runAction(cc.Sequence:create(
+                cc.DelayTime:create(d),
+                cc.Spawn:create(
+                    cc.ScaleTo:create(d, 0),
+                    cc.MoveTo:create(d, cc.p(display.right - 10, 10))
+                ),
+                cc.RemoveSelf:create()
+            ))
+            audio.playSound("camera.mp3")
+        end
         audio.playSound("cupin.mp3")
     end
     for _, e in ipairs(self.coins:getChildren()) do
@@ -311,7 +328,8 @@ function MainScene:showResult()
         self:resetDot()
     end)):move(0, 0)
     if math.random() > 0.5 then
-        self.screenShot:addTo(self.resultLayer)
+        self.screenShot:move(display.right - 10, 10):addTo(self.resultLayer):setScale(0)
+        self.screenShot:runAction(cc.Spawn:create(cc.ScaleTo:create(0.2, 0.5), cc.MoveTo:create(0.2, display.center)))
     else
         local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.resultLayer)
         menu:addChild(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
@@ -416,6 +434,7 @@ function MainScene:resetDot()
         end
         bumper:move(x, y)
         local bumperPb = cc.PhysicsBody:createCircle(bumper:getContentSize().width / 2, cc.PHYSICSBODY_MATERIAL_DEFAULT, cc.p(0, 0))
+        bumperPb:setContactTestBitmask(4)
         bumperPb:setDynamic(false)
         bumper:setPhysicsBody(bumperPb)
     end
@@ -466,6 +485,7 @@ function MainScene:onTouch(event)
         self.hit = false
         self.shadowCounter = 0
         self.timeoutCounter = 0
+        self.physicsContact = false
         self.bg:removeTouch()
         self:scheduleUpdate(handler(self, self.step))
         audio.playSound("shot.mp3")
@@ -484,6 +504,7 @@ function MainScene:onContactPostsolve(contact, solve)
 end
 
 function MainScene:onContactSeparate(contact)
+    self.physicsContact = true
 end
 
 function MainScene:calcTheta(x, y, g, v)
