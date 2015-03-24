@@ -364,6 +364,8 @@ function MainScene:showResult()
             menu:addChild(rewardBtn)
         elseif feature == "review" then
             local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.resultLayer)
+            display.newSprite("dots/monyu.png"):move(display.cx, display.cy - 16):addTo(self.resultLayer):setScale(2)
+            display.newSprite("star.png"):move(display.cx, display.cy + 32):addTo(self.resultLayer)
             menu:addChild(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
                 cc.UserDefault:getInstance():setIntegerForKey("review", -1)
                 cc.Application:getInstance():openURL("http://google.com")
