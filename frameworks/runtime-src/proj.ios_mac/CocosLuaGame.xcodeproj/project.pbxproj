@@ -78,6 +78,9 @@
 		C660EB3F1AC0554E00C9207B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB3E1AC0554E00C9207B /* SystemConfiguration.framework */; };
 		C660EB411AC0555800C9207B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB401AC0555800C9207B /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		C660EB431AC0566600C9207B /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB421AC0566600C9207B /* GameController.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C6E37B7C1AC1B42100984FF8 /* libAdapterNend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B751AC1B42100984FF8 /* libAdapterNend.a */; };
+		C6E37B7D1AC1B42100984FF8 /* libNendAd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B761AC1B42100984FF8 /* libNendAd.a */; };
+		C6E37B7F1AC1B44100984FF8 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B7E1AC1B44000984FF8 /* ImageIO.framework */; };
 		D6B061351803AC000077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B061341803AC000077942B /* CoreMotion.framework */; };
 		F293B3CD15EB7BE500256477 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3CC15EB7BE500256477 /* QuartzCore.framework */; };
 		F293B3D115EB7BE500256477 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3D015EB7BE500256477 /* OpenAL.framework */; };
@@ -249,6 +252,14 @@
 		C660EB3E1AC0554E00C9207B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		C660EB401AC0555800C9207B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = DEVELOPER_DIR; };
 		C660EB421AC0566600C9207B /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/GameController.framework; sourceTree = DEVELOPER_DIR; };
+		C6E37B751AC1B42100984FF8 /* libAdapterNend.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAdapterNend.a; sourceTree = "<group>"; };
+		C6E37B761AC1B42100984FF8 /* libNendAd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libNendAd.a; sourceTree = "<group>"; };
+		C6E37B771AC1B42100984FF8 /* NADIconArrayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NADIconArrayView.h; sourceTree = "<group>"; };
+		C6E37B781AC1B42100984FF8 /* NADIconLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NADIconLoader.h; sourceTree = "<group>"; };
+		C6E37B791AC1B42100984FF8 /* NADIconView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NADIconView.h; sourceTree = "<group>"; };
+		C6E37B7A1AC1B42100984FF8 /* NADInterstitial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NADInterstitial.h; sourceTree = "<group>"; };
+		C6E37B7B1AC1B42100984FF8 /* NADView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NADView.h; sourceTree = "<group>"; };
+		C6E37B7E1AC1B44000984FF8 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/ImageIO.framework; sourceTree = DEVELOPER_DIR; };
 		D6B061341803AC000077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
 		F293B3C815EB7BE500256477 /* CocosLuaGame iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CocosLuaGame iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F293B3CC15EB7BE500256477 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -290,8 +301,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6E37B7F1AC1B44100984FF8 /* ImageIO.framework in Frameworks */,
 				C660EB431AC0566600C9207B /* GameController.framework in Frameworks */,
 				C660EB411AC0555800C9207B /* WebKit.framework in Frameworks */,
+				C6E37B7C1AC1B42100984FF8 /* libAdapterNend.a in Frameworks */,
 				C660EB3F1AC0554E00C9207B /* SystemConfiguration.framework in Frameworks */,
 				C660EB3D1AC0553D00C9207B /* StoreKit.framework in Frameworks */,
 				C660EB3B1AC0552F00C9207B /* Social.framework in Frameworks */,
@@ -300,6 +313,7 @@
 				C660EB351AC054EB00C9207B /* EventKit.framework in Frameworks */,
 				C660EB331AC054DF00C9207B /* CoreTelephony.framework in Frameworks */,
 				C660EB311AC054D300C9207B /* CoreMedia.framework in Frameworks */,
+				C6E37B7D1AC1B42100984FF8 /* libNendAd.a in Frameworks */,
 				C660EB2F1AC054B900C9207B /* AdSupport.framework in Frameworks */,
 				C660EB2D1AC0549F00C9207B /* libz.1.2.5.dylib in Frameworks */,
 				9FF504871A5E88CE00AFDA55 /* libsimulator iOS.a in Frameworks */,
@@ -430,6 +444,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C6E37B741AC1B42100984FF8 /* nend */ = {
+			isa = PBXGroup;
+			children = (
+				C6E37B751AC1B42100984FF8 /* libAdapterNend.a */,
+				C6E37B761AC1B42100984FF8 /* libNendAd.a */,
+				C6E37B771AC1B42100984FF8 /* NADIconArrayView.h */,
+				C6E37B781AC1B42100984FF8 /* NADIconLoader.h */,
+				C6E37B791AC1B42100984FF8 /* NADIconView.h */,
+				C6E37B7A1AC1B42100984FF8 /* NADInterstitial.h */,
+				C6E37B7B1AC1B42100984FF8 /* NADView.h */,
+			);
+			path = nend;
+			sourceTree = "<group>";
+		};
 		F293B3BD15EB7BE500256477 = {
 			isa = PBXGroup;
 			children = (
@@ -440,6 +468,7 @@
 				5023817117EBBE3400990C9B /* mac */,
 				F293BB7C15EB830F00256477 /* Classes */,
 				F293B3CB15EB7BE500256477 /* Frameworks */,
+				C6E37B741AC1B42100984FF8 /* nend */,
 				F293B3C915EB7BE500256477 /* Products */,
 				F293BC4615EB859D00256477 /* Resources */,
 				452BCB5332B50A62C0C6DAAE /* Pods */,
@@ -458,6 +487,7 @@
 		F293B3CB15EB7BE500256477 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C6E37B7E1AC1B44000984FF8 /* ImageIO.framework */,
 				C660EB421AC0566600C9207B /* GameController.framework */,
 				C660EB401AC0555800C9207B /* WebKit.framework */,
 				C660EB3E1AC0554E00C9207B /* SystemConfiguration.framework */,
@@ -956,7 +986,7 @@
 				);
 				INFOPLIST_FILE = ios/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/nend";
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_IOS_BEGIN)",
 					"$(_COCOS_LIB_IOS_END)",
@@ -996,7 +1026,7 @@
 				);
 				INFOPLIST_FILE = ios/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/nend";
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_IOS_BEGIN)",
 					"$(_COCOS_LIB_IOS_END)",
