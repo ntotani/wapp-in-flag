@@ -10,12 +10,12 @@ local COIN_PER_REWARD = 100
 local TIME_OUT_SEC = 5
 
 local DOTS = {
-    {name = "shobon", vel = 800, gra = 980},
-    {name = "kita", vel = 800, gra = 980},
-    {name = "monyu", vel = 800, gra = 980},
-    {name = "owata", vel = 800, gra = 980},
-    {name = "pokan", vel = 800, gra = 980},
-    {name = "shakin", vel = 1600, gra = 1960}
+    {name = "shobon", vel = 800, gra = 980, res = 0.5},
+    {name = "kita",   vel = 800, gra = 980, res = 2},
+    {name = "monyu",  vel = 800, gra = 980, res = 0.5},
+    {name = "owata",  vel = 800, gra = 980, res = 0.5},
+    {name = "pokan",  vel = 800, gra = 980, res = 0.5},
+    {name = "shakin", vel = 1600, gra = 1960, res = 0.5}
 }
 local DOTS_HASH = {}
 for _, e in ipairs(DOTS) do DOTS_HASH[e.name] = e end
@@ -57,7 +57,7 @@ function MainScene:initMainNode()
     -- cc.PHYSICSSHAPE_MATERIAL_DEFAULT = {density = 0.0, restitution = 0.5, friction = 0.5}
     -- cc.PHYSICSBODY_MATERIAL_DEFAULT = {density = 0.1, restitution = 0.5, friction = 0.5}
     self.dot = display.newSprite("dots/" .. self.face .. ".png", 32, 96)
-    local material = {density = 0.1, restitution = 0.5, friction = 0.5}
+    local material = {density = 0.1, restitution = DOTS_HASH[self.face].res, friction = 0.5}
     local pb = cc.PhysicsBody:createCircle(self.dot:getContentSize().width / 2, material, cc.p(0, 0))
     pb:setGravityEnable(false)
     pb:setContactTestBitmask(1)
@@ -140,6 +140,7 @@ function MainScene:initDots()
         local idx = currentIdx()
         self.face = DOTS[idx].name
         self.dot:setTexture("dots/" .. self.face .. ".png")
+        self.dot:getPhysicsBody():getFirstShape():setRestitution(DOTS_HASH[self.face].res)
         cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS_HASH[self.face].gra))
         closeDots()
         self:resetDot()
@@ -196,7 +197,7 @@ end
 function MainScene:showWithScene(transition, time, more)
     self:setVisible(true)
     local scene = display.newScene(self.name_, { physics = true })
-    scene:getPhysicsWorld():setGravity(cc.p(0, -980))
+    scene:getPhysicsWorld():setGravity(cc.p(0, -DOTS_HASH[self.face].gra))
     scene:addChild(self)
     display.runScene(scene, transition, time, more)
     return self
@@ -412,6 +413,7 @@ function MainScene:checkLottery()
         commit:onClicked(function()
             self.face = DOTS[newDots[lot]].name
             self.dot:setTexture("dots/" .. self.face .. ".png")
+            self.dot:getPhysicsBody():getFirstShape():setRestitution(DOTS_HASH[self.face].res)
             cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS_HASH[self.face].gra))
             lottery:removeSelf()
             self.resultLayer:show()
