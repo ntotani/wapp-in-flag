@@ -323,7 +323,7 @@ function MainScene:showResult()
     self.screenShot:begin()
     self.mainNode:visit()
     self.screenShot:endToLua()
-    local menu = cc.Menu:create(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, 45):onClicked(function()
+    local menu = cc.Menu:create(cc.MenuItemImage:create("retry.png", "retry.png"):align(cc.p(0.5, 0), display.cx, 10):onClicked(function()
         for _, e in ipairs(self.resultLayer:getChildren()) do e:removeSelf() end
         self.resultLayer:hide()
         self.score.value = 0
@@ -346,7 +346,7 @@ function MainScene:showResult()
             self.screenShot:move(display.right - 10, 10):addTo(self.resultLayer):setScale(0)
             self.screenShot:runAction(cc.Spawn:create(cc.ScaleTo:create(0.2, 0.5), cc.MoveTo:create(0.2, display.center)))
         elseif feature == "reward" then
-            local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.resultLayer)
+            local dotsBg = display.newSprite("reward.png"):move(display.center):addTo(self.resultLayer)
             local rewardBtn = nil
             rewardBtn = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
                 require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reward", {callback = function(success)
