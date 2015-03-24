@@ -99,7 +99,7 @@ GADBannerView *banner;
     
     [window makeKeyAndVisible];
 
-    [[UIApplication sharedApplication] setStatusBarHidden: YES];
+    //[[UIApplication sharedApplication] setStatusBarHidden: YES];
 
     // IMPORTANT: Setting the GLView should be done after creating the RootViewController
     cocos2d::GLView *glview = cocos2d::GLViewImpl::createWithEAGLView(eaglView);
@@ -188,7 +188,7 @@ GADBannerView *banner;
 + (void)bannerAd:(NSDictionary*)args {
     if ([args[@"show"] boolValue]) {
         [UIView animateWithDuration:0.2 animations:^{
-            banner.frame = CGRectMake(0, 0, banner.frame.size.width, banner.frame.size.height);
+            banner.frame = CGRectMake(0, [UIApplication sharedApplication].statusBarFrame.size.height, banner.frame.size.width, banner.frame.size.height);
         }];
     } else {
         banner.frame = CGRectMake(0, -banner.frame.size.height, banner.frame.size.width, banner.frame.size.height);
