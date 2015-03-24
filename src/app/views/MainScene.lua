@@ -81,6 +81,8 @@ function MainScene:initScores()
     self.coin:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.coin.value = coinValue
     self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self.mainNode)
+    local highScore = cc.UserDefault:getInstance():getIntegerForKey("score", 0)
+    self.highScore = cc.Label:createWithSystemFont("MAX " .. highScore, "Arial", 20):align(cc.p(0, 1), 10, display.top - 10):addTo(self.mainNode):enableOutline(cc.c4b(0, 0, 0, 255), 2)
 end
 
 function MainScene:initResults()
@@ -215,6 +217,12 @@ function MainScene:step(delta)
     elseif cc.rectIntersectsRect(self.dot:getBoundingBox(), self.box:getBoundingBox()) then
         self.score.value = self.score.value + 1
         self.score:setString(self.score.value)
+        local highScore = cc.UserDefault:getInstance():getIntegerForKey("score", 0)
+        if self.score.value > highScore then
+            highScore = self.score.value
+            cc.UserDefault:getInstance():setIntegerForKey("score", highScore)
+            self.highScore:setString("MAX " .. highScore)
+        end
         self:unscheduleUpdate()
         self.screenShot:begin()
         self.mainNode:visit()
