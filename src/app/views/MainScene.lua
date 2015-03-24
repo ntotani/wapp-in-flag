@@ -4,7 +4,7 @@ local MainScene = class("MainScene", cc.load("mvc").ViewBase)
 
 local teeX, greenX = 15, 325
 local MAX_BUMPER = 10
-local COIN_APPERE_RATE = 10
+local COIN_APPERE_RATE = 70
 local COIN_PER_LOT = 100
 local COIN_PER_REWARD = 100
 local TIME_OUT_SEC = 5
@@ -82,6 +82,10 @@ function MainScene:initScores()
     self.coin:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.coin.value = coinValue
     self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self.mainNode)
+    self.feverCount = 0
+    if cc.UserDefault:getInstance():getIntegerForKey("fever", -1) == -1 then
+        cc.UserDefault:getInstance():setIntegerForKey("fever", os.time() + 60)
+    end
     local highScore = cc.UserDefault:getInstance():getIntegerForKey("score", 0)
     self.highScore = cc.Label:createWithSystemFont("MAX " .. highScore, "Arial", 20):align(cc.p(0, 1), 10, display.top - 10):addTo(self.mainNode):enableOutline(cc.c4b(0, 0, 0, 255), 2)
 end
@@ -251,9 +255,7 @@ function MainScene:step(delta)
         audio.playSound("cupin.mp3")
     end
     for _, e in ipairs(self.coins:getChildren()) do
-        local dist = cc.pDistanceSQ(cc.p(e:getPosition()), cc.p(self.dot:getPosition()))
-        local limit = rad + e:getContentSize().width / 2
-        if dist <= limit * limit then
+        if cc.rectIntersectsRect(e:getBoundingBox(), self.dot:getBoundingBox()) then
             self:updateCoin(1)
             e:removeSelf()
             audio.playSound("coin.mp3")
@@ -409,6 +411,14 @@ function MainScene:resetDot()
     self.box:move(greenX, self.pin:getPositionY() - self.pin:getContentSize().height / 2)
     self.green:move(greenX, self.box:getPositionY() - self.green:getContentSize().height / 2)
     local safeAngle = math.random(1, 2) == 1 and angle1 or angle2
+    local now = os.time()
+    local fever = cc.UserDefault:getInstance():getIntegerForKey("fever", now)
+    print(now, fever)
+    if now > fever then
+        self.feverCount = 7
+        safeAngle = angle1
+        cc.UserDefault:getInstance():setIntegerForKey("fever", now + 60 * 60 * 24) -- one day
+    end
     local safeVel = cc.pMul(cc.pForAngle(safeAngle), dotVel)
     local safeTime = (greenX - teeX) / safeVel.x
     local safePath = self:calcPath(safeVel.x, safeVel.y, gravity, safeTime, self.dot:getContentSize().width, teeX, dotY)
@@ -439,13 +449,24 @@ function MainScene:resetDot()
         bumper:setPhysicsBody(bumperPb)
     end
     for _, e in ipairs(self.coins:getChildren()) do e:removeSelf() end
-    if self.score.value > 0 and math.random(1, 100) <= COIN_APPERE_RATE then
-        local t = safeTime * (0.1 + 0.8 * math.random())
-        local x = teeX + safeVel.x * t
-        local y = dotY + safeVel.y * t + gravity / 2 * t * t
-        if y < display.top then
+    if self.feverCount > 0 then
+        self.feverCount = self.feverCount - 1
+        local num = 15
+        for i = 1, num do
+            local t = safeTime / (num + 1) * i
+            local x = teeX + safeVel.x * t
+            local y = dotY + safeVel.y * t + gravity / 2 * t * t
             display.newSprite("coin.png", x, y):addTo(self.coins)
         end
+    elseif self.score.value > 0 and math.random(1, 100) <= COIN_APPERE_RATE then
+        local t = 0
+        local y = display.top
+        while y >= display.top do
+            t = safeTime * (0.1 + 0.8 * math.random())
+            y = dotY + safeVel.y * t + gravity / 2 * t * t
+        end
+        local x = teeX + safeVel.x * t
+        display.newSprite("coin.png", x, y):addTo(self.coins)
     end
     for _, e in ipairs(self.shadows:getChildren()) do e:removeSelf() end
     if self.score.value == 0 and cc.UserDefault:getInstance():getIntegerForKey("dots", 1) > 1 then
