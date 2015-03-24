@@ -331,6 +331,7 @@ function MainScene:showResult()
         self.ring:removeSelf()
         self.dot:setOpacity(255)
         self:resetDot()
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = false })
     end)):move(0, 0)
     if not self:checkLottery() then
         local features = {"none", "share"}
@@ -357,6 +358,7 @@ function MainScene:showResult()
                         rewardBtn:removeSelf()
                         if self:checkLottery() then
                             self.resultLayer:hide()
+                            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = false })
                         end
                     end
                 end})
@@ -372,6 +374,7 @@ function MainScene:showResult()
             end))
         end
         self.resultLayer:show()
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = true })
     end
     menu:addTo(self.resultLayer)
 end
@@ -412,6 +415,7 @@ function MainScene:checkLottery()
             cc.Director:getInstance():getRunningScene():getPhysicsWorld():setGravity(cc.p(0, -DOTS_HASH[self.face].gra))
             lottery:removeSelf()
             self.resultLayer:show()
+            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = true })
         end)
         audio.playSound("lottery.mp3")
     end)

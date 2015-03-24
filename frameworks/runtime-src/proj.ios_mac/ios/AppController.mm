@@ -32,6 +32,8 @@
 #import "platform/ios/CCEAGLView-ios.h"
 #import "CCLuaBridge.h"
 
+#import <GoogleMobileAds/GoogleMobileAds.h>
+
 @implementation AppController
 
 #pragma mark -
@@ -41,6 +43,8 @@
 static AppDelegate s_sharedApplication;
 static RootViewController *s_rootViewController;
 static int s_adCallbackID;
+
+GADBannerView *banner;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -72,6 +76,14 @@ static int s_adCallbackID;
     viewController.wantsFullScreenLayout = YES;
     viewController.view = eaglView;
     s_rootViewController = viewController;
+
+    banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner origin:CGPointMake(0, -kGADAdSizeBanner.size.height)];
+    banner.adUnitID = @"ca-app-pub-9353254478629065/9695133034";
+    banner.rootViewController = viewController;
+    [viewController.view addSubview:banner];
+    GADRequest *req = [GADRequest request];
+    req.testDevices = @[ @"222a73cb790e1c8aea3fe4fcbee5538a" ];
+    [banner loadRequest:req];
 
     // Set RootViewController to window
     if ( [[UIDevice currentDevice].systemVersion floatValue] < 6.0)
@@ -171,6 +183,16 @@ static int s_adCallbackID;
     stack->pushBoolean(success);
     stack->executeFunction(1);
     cocos2d::LuaBridge::releaseLuaFunctionById(s_adCallbackID);
+}
+
++ (void)bannerAd:(NSDictionary*)args {
+    if ([args[@"show"] boolValue]) {
+        [UIView animateWithDuration:0.2 animations:^{
+            banner.frame = CGRectMake(0, 0, banner.frame.size.width, banner.frame.size.height);
+        }];
+    } else {
+        banner.frame = CGRectMake(0, -banner.frame.size.height, banner.frame.size.width, banner.frame.size.height);
+    }
 }
 
 @end
