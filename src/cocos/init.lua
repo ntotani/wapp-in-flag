@@ -27,6 +27,7 @@ require "cocos.cocos2d.Cocos2dConstants"
 require "cocos.cocos2d.functions"
 
 if CC_USE_FRAMEWORK then
+    require "cocos.cocos2d.bitExtend"
     require "cocos.framework.init"
 else
     -- opengl
