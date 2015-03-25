@@ -35,6 +35,7 @@ local DOTS = {
     {name = "tira",   vel = 800, gra = 980, res = 0.5, face = "( 'ω')", dead = "( 'ω...:.;::.."},
     {name = "haha",   vel = 800, gra = 980, res = 0.5, face = "(´Д｀)", dead = "(´Д...:.;::.."},
     {name = "foon",   vel = 800, gra = 980, res = 0.5, face = "(´_ゝ`)", dead = "(´_ゝ...:.;::.."},
+    {name = "blank",  vel = 800, gra = 980, res = 0.5, face = "@blankblank hi!", dead = "@blankblank hi!"},
     {name = "cyun",   vel = 800, gra = 980, res = 0.5, face = "(・8・)", dead = "(・8...:.;::.."},
     {name = "puyo",   vel = 800, gra = 980, res = 0.5, face = "(◉ ◉)", dead = "(◉ ...:.;::.."},
     {name = "tere",   vel = 800, gra = 980, res = 0.5, face = "(灬ºωº灬)", dead = "(灬ºω...:.;::.."},
@@ -511,7 +512,8 @@ function MainScene:resetDot()
         safeAngle = angle1
         local since = 60 * 60 * 24 -- one day
         cc.UserDefault:getInstance():setIntegerForKey("fever", now + since)
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "localNotification", { sec = since, body = DOTS_HASH[self.face].face })
+        local body = self.face == "blank" and "OwataGolf" or DOTS_HASH[self.face].face
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "localNotification", { sec = since, body = body })
     end
     local safeVel = cc.pMul(cc.pForAngle(safeAngle), dotVel)
     local safeTime = (greenX - teeX) / safeVel.x
