@@ -80,12 +80,12 @@ GADBannerView *banner;
     viewController.view = eaglView;
     s_rootViewController = viewController;
 
-    banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner origin:CGPointMake(0, -kGADAdSizeBanner.size.height)];
+    banner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeBanner origin:CGPointMake(([UIScreen mainScreen].bounds.size.width - kGADAdSizeBanner.size.width) / 2, -kGADAdSizeBanner.size.height)];
     banner.adUnitID = @"ca-app-pub-9353254478629065/9695133034";
     banner.rootViewController = viewController;
     [viewController.view addSubview:banner];
     GADRequest *req = [GADRequest request];
-    req.testDevices = @[ @"222a73cb790e1c8aea3fe4fcbee5538a" ];
+    req.testDevices = @[@"222a73cb790e1c8aea3fe4fcbee5538a", @"d4bd2d366be0f2ae169015eaf3ce4714"];
     [banner loadRequest:req];
 
     // Set RootViewController to window
@@ -201,12 +201,13 @@ GADBannerView *banner;
 }
 
 + (void)bannerAd:(NSDictionary*)args {
+    float x = ([UIScreen mainScreen].bounds.size.width - kGADAdSizeBanner.size.width) / 2;
     if ([args[@"show"] boolValue]) {
         [UIView animateWithDuration:0.2 animations:^{
-            banner.frame = CGRectMake(0, [UIApplication sharedApplication].statusBarFrame.size.height, banner.frame.size.width, banner.frame.size.height);
+            banner.frame = CGRectMake(x, [UIApplication sharedApplication].statusBarFrame.size.height, banner.frame.size.width, banner.frame.size.height);
         }];
     } else {
-        banner.frame = CGRectMake(0, -banner.frame.size.height, banner.frame.size.width, banner.frame.size.height);
+        banner.frame = CGRectMake(x, -banner.frame.size.height, banner.frame.size.width, banner.frame.size.height);
     }
 }
 
