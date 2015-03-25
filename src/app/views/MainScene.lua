@@ -89,8 +89,9 @@ function MainScene:initScores()
     if cc.UserDefault:getInstance():getIntegerForKey("fever", -1) == -1 then
         cc.UserDefault:getInstance():setIntegerForKey("fever", os.time() + 60)
     end
+    local crown = display.newSprite("crown.png"):align(cc.p(0, 1), 10, display.top - 24):addTo(self.mainNode)
     local highScore = cc.UserDefault:getInstance():getIntegerForKey("score", 0)
-    self.highScore = cc.Label:createWithSystemFont("MAX " .. highScore, "Arial", 20):align(cc.p(0, 1), 10, display.top - 24):addTo(self.mainNode):enableOutline(cc.c4b(0, 0, 0, 255), 2)
+    self.highScore = cc.Label:createWithSystemFont(highScore, "Arial", 20):align(cc.p(0, 1), crown:getContentSize().width + 15, display.top - 24):addTo(self.mainNode):enableOutline(cc.c4b(0, 0, 0, 255), 2)
 end
 
 function MainScene:initResults()
@@ -229,7 +230,7 @@ function MainScene:step(delta)
         if self.score.value > highScore then
             highScore = self.score.value
             cc.UserDefault:getInstance():setIntegerForKey("score", highScore)
-            self.highScore:setString("MAX " .. highScore)
+            self.highScore:setString(highScore)
         end
         if self.score.value % 10 == 0 then
             require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reportScore", { board = self.face, score = self.score.value })
