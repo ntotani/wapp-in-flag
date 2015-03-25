@@ -24,10 +24,11 @@
  ****************************************************************************/
 
 #import <AdColony/AdColony.h>
+#import <GameKit/GameKit.h>
 
 @class RootViewController;
 
-@interface AppController : NSObject <UIAccelerometerDelegate, UIAlertViewDelegate, UITextFieldDelegate,UIApplicationDelegate,AdColonyDelegate>
+@interface AppController : NSObject <UIAccelerometerDelegate, UIAlertViewDelegate, UITextFieldDelegate,UIApplicationDelegate,AdColonyDelegate,GKGameCenterControllerDelegate>
 {
     UIWindow *window;
     RootViewController    *viewController;

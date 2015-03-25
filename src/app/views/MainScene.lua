@@ -341,6 +341,8 @@ function MainScene:showResult()
         self.dot:setOpacity(255)
         self:resetDot()
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = false })
+    end), cc.MenuItemImage:create("board.png", "board.png"):align(cc.p(0, 0), 10, 10):onClicked(function()
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "showBoard", { id = self.face })
     end)):move(0, 0)
     if not self:checkLottery() then
         local features = {"none", "share"}

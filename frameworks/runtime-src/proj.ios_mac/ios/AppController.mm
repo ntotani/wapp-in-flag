@@ -33,7 +33,6 @@
 #import "CCLuaBridge.h"
 
 #import <GoogleMobileAds/GoogleMobileAds.h>
-#import <GameKit/GameKit.h>
 
 @implementation AppController
 
@@ -44,11 +43,13 @@
 static AppDelegate s_sharedApplication;
 static RootViewController *s_rootViewController;
 static int s_adCallbackID;
+static AppController *s_appController;
 
 GADBannerView *banner;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    s_appController = self;
     [AdColony configureWithAppID: @"appcc91c8db46e0439a83"
                          zoneIDs: @[@"vze85d3eca448840c181"]
                         delegate: self
@@ -209,6 +210,22 @@ GADBannerView *banner;
     GKScore *score = [[GKScore alloc] initWithLeaderboardIdentifier:args[@"board"]];
     score.value = [args[@"score"] longLongValue];
     [GKScore reportScores:@[score] withCompletionHandler:nil];
+}
+
++ (void)showBoard:(NSDictionary*)args {
+    if (![GKLocalPlayer localPlayer].isAuthenticated) {
+        return;
+    }
+    GKGameCenterViewController *vc = [[GKGameCenterViewController alloc] init];
+    vc.viewState = GKGameCenterViewControllerStateLeaderboards;
+    vc.leaderboardIdentifier = args[@"id"];
+    vc.gameCenterDelegate = s_appController;
+    [s_rootViewController presentViewController:vc animated:YES completion:nil];
+}
+
+-(void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)vc
+{
+    [vc dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
