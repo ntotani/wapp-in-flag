@@ -13,9 +13,40 @@ local DOTS = {
     {name = "shobon", vel = 800, gra = 980, res = 0.5, face = "(´・ω・｀)", dead = "(´・ω...:.;::.."},
     {name = "kita",   vel = 800, gra = 980, res = 0.5, face = "(ﾟ∀ﾟ)", dead = "(ﾟ∀...:.;::.."},
     {name = "monyu",  vel = 800, gra = 980, res = 0.5, face = "(*´ω｀*)", dead = "(*´ω...:.;::.."},
-    {name = "owata",  vel = 800, gra = 980, res = 0.5, face = "＼(^o^)／", dead = "＼(^o^)／"},
     {name = "pokan",  vel = 800, gra = 980, res = 0.5, face = "( ﾟдﾟ)", dead = "( ﾟд...:.;::.."},
-    {name = "shakin", vel = 1600, gra = 1960, res = 0.5, face = "(｀・ω・´)", dead = "(｀・ω...:.;::.."}
+    {name = "shakin", vel = 800, gra = 980, res = 0.5, face = "(｀・ω・´)", dead = "(｀・ω...:.;::.."},
+    {name = "pupu",   vel = 800, gra = 980, res = 0.5, face = "(*´艸｀*)", dead = "(*´艸...:.;::.."},
+    {name = "tehe",   vel = 800, gra = 980, res = 0.5, face = "(・ω<)", dead = "(・ω...:.;::.."},
+    {name = "jito",   vel = 800, gra = 980, res = 0.5, face = "(T_T)", dead = "(T_...:.;::.."},
+    {name = "he",     vel = 800, gra = 980, res = 0.5, face = "(・へ・)", dead = "(・へ...:.;::.."},
+    {name = "mona",   vel = 800, gra = 980, res = 0.5, face = "(´ ∀ ｀)", dead = "(´ ∀ ...:.;::.."},
+    {name = "mega",   vel = 800, gra = 980, res = 0.5, face = "(＠_＠)", dead = "(＠_...:.;::.."},
+    {name = "yoda",   vel = 800, gra = 980, res = 0.5, face = "(^q^)", dead = "(^q...:.;::.."},
+    {name = "nipa",   vel = 800, gra = 980, res = 0.5, face = "(=´▽`=)", dead = "(=´▽...:.;::.."},
+    {name = "cry",    vel = 800, gra = 980, res = 0.5, face = "(/ _ ;)", dead = "(/ _ ...:.;::.."},
+    {name = "po",     vel = 800, gra = 980, res = 0.5, face = "(*´ｪ`*)", dead = "(*´ｪ...:.;::.."},
+    {name = "een",    vel = 800, gra = 980, res = 0.5, face = "(つд⊂)", dead = "(つд...:.;::.."},
+    {name = "buwa",   vel = 800, gra = 980, res = 0.5, face = "(´；ω；｀)", dead = "(´；ω...:.;::.."},
+    {name = "iiha",   vel = 800, gra = 980, res = 0.5, face = "( ；∀；)", dead = "( ；∀...:.;::.."},
+    {name = "nonowa", vel = 800, gra = 980, res = 0.5, face = "(のワの)", dead = "(のワ...:.;::.."},
+    {name = "eee",    vel = 800, gra = 980, res = 0.5, face = "(＞Δ＜)", dead = "(＞Δ...:.;::.."},
+    {name = "puu",    vel = 800, gra = 980, res = 0.5, face = "(´-ε -｀)", dead = "(´-ε ...:.;::.."},
+    {name = "biki",   vel = 800, gra = 980, res = 0.5, face = "(＃＾ω＾)", dead = "(＃＾ω...:.;::.."},
+    {name = "tira",   vel = 800, gra = 980, res = 0.5, face = "( 'ω')", dead = "( 'ω...:.;::.."},
+    {name = "haha",   vel = 800, gra = 980, res = 0.5, face = "(´Д｀)", dead = "(´Д...:.;::.."},
+    {name = "foon",   vel = 800, gra = 980, res = 0.5, face = "(´_ゝ`)", dead = "(´_ゝ...:.;::.."},
+    {name = "cyun",   vel = 800, gra = 980, res = 0.5, face = "(・8・)", dead = "(・8...:.;::.."},
+    {name = "puyo",   vel = 800, gra = 980, res = 0.5, face = "(◉ ◉)", dead = "(◉ ...:.;::.."},
+    {name = "tere",   vel = 800, gra = 980, res = 0.5, face = "(灬ºωº灬)", dead = "(灬ºω...:.;::.."},
+    {name = "robo",   vel = 800, gra = 980, res = 0.5, face = "(◎皿◎)", dead = "(◎皿...:.;::.."},
+    {name = "nyan",   vel = 800, gra = 980, res = 0.5, face = "( Φ ω Φ )", dead = "( Φ ω ...:.;::.."},
+    {name = "usa",    vel = 800, gra = 980, res = 0.5, face = "( ･×･)", dead = "( ･×...:.;::.."},
+    {name = "manda",  vel = 800, gra = 980, res = 0.5, face = "( ⌒,_ゝ⌒)", dead = "( ⌒,_ゝ...:.;::.."},
+    {name = "suya",   vel = 800, gra = 980, res = 0.5, face = "( ˘ω˘ )", dead = "( ˘ω...:.;::.."},
+    {name = "pero",   vel = 800, gra = 980, res = 0.5, face = "(´ ڡ `)", dead = "(´ ڡ ...:.;::.."},
+    {name = "kona",   vel = 800, gra = 980, res = 0.5, face = "(=ω=)", dead = "(=ω...:.;::.."},
+    {name = "yare",   vel = 800, gra = 980, res = 0.5, face = "( ´･_･` )", dead = "( ´･_...:.;::.."},
+    {name = "owata",  vel = 800, gra = 980, res = 0.5, face = "＼(^o^)／", dead = "＼(^o^)／"}
 }
 local DOTS_HASH = {}
 for _, e in ipairs(DOTS) do DOTS_HASH[e.name] = e end
@@ -121,7 +152,7 @@ function MainScene:initDots()
     scrollView:setInnerContainerSize(cc.size(64 * #DOTS + bgSize.width - 64, bgSize.height))
     local hasDot = function(i)
         local dotsFlags = cc.UserDefault:getInstance():getIntegerForKey("dots", 1)
-        return bit.band(dotsFlags, bit.lshift(1, i - 1)) > 0
+        return bit.band(dotsFlags, math.pow(2, i - 1)) > 0
     end
     for i, e in ipairs(DOTS) do
         display.newSprite("dots/" .. e.name .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
@@ -401,7 +432,7 @@ function MainScene:checkLottery()
     local dotsFlags = cc.UserDefault:getInstance():getIntegerForKey("dots", 1)
     local newDots = {}
     for i = 1, #DOTS do
-        if bit.band(dotsFlags, bit.lshift(1, i - 1)) == 0 then
+        if bit.band(dotsFlags, math.pow(2, i - 1)) == 0 then
             table.insert(newDots, i)
         end
     end
@@ -419,7 +450,7 @@ function MainScene:checkLottery()
     local commit = nil
     commit = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
         self:updateCoin(-COIN_PER_LOT)
-        dotsFlags = bit.bor(dotsFlags, bit.lshift(1, newDots[lot] - 1))
+        dotsFlags = bit.bor(dotsFlags, math.pow(2, newDots[lot] - 1))
         cc.UserDefault:getInstance():setIntegerForKey("dots", dotsFlags)
         dot:setColor(cc.c3b(255, 255, 255))
         effect:scaleTo({time = 0.1, scale = 1})
