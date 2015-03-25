@@ -102,7 +102,7 @@ function MainScene:initResults()
         local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
         self.screenShot:newImage():saveToFile(name)
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "share", {
-            text = "SCORE: " .. self.score.value,
+            text = DOTS_HASH[self.face][self.shareDead and "dead" or "face"] .. " #OwataGolf http://j.mp/19OfYXw",
             image = name
         })
     end)):move(0, 0):addTo(self):hide()
@@ -232,6 +232,7 @@ function MainScene:step(delta)
             self.highScore:setString("MAX " .. highScore)
         end
         self:unscheduleUpdate()
+        self.shareDead = false
         self.screenShot:begin()
         self.mainNode:visit()
         self.screenShot:endToLua()
@@ -321,6 +322,7 @@ function MainScene:updateCoin(val)
 end
 
 function MainScene:showResult()
+    self.shareDead = true
     self.screenShot:begin()
     self.mainNode:visit()
     self.screenShot:endToLua()
