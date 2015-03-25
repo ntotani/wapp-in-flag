@@ -282,9 +282,7 @@ function MainScene:step(delta)
         self.timeoutCounter = self.timeoutCounter + delta
         if self.timeoutCounter > TIME_OUT_SEC then
             self.timeoutCounter = -1
-            local menu = nil
-            menu = cc.Menu:create(cc.MenuItemImage:create("kill.png", "kill.png"):move(display.cx, display.cy / 2):onClicked(function()
-                menu:removeSelf()
+            self.timeoutMenu = cc.Menu:create(cc.MenuItemImage:create("kill.png", "kill.png"):move(display.cx, display.cy / 2):onClicked(function()
                 self:dead(self.dot:getPositionY())
             end)):move(0, 0):addTo(self)
         end
@@ -292,6 +290,10 @@ function MainScene:step(delta)
 end
 
 function MainScene:dead(y)
+    if self.timeoutMenu then
+        self.timeoutMenu:removeSelf()
+        self.timeoutMenu = nil
+    end
     local rad = self.dot:getContentSize().height / 2
     self:unscheduleUpdate()
     local shadows = self.shadows:getChildren()
