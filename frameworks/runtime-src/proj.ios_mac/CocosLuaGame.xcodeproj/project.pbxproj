@@ -84,6 +84,9 @@
 		C6E37B821AC1BA7600984FF8 /* libAdapterIAd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B811AC1BA7600984FF8 /* libAdapterIAd.a */; };
 		C6E37B841AC1BA9900984FF8 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B831AC1BA9900984FF8 /* iAd.framework */; };
 		C6E37B8B1AC293E300984FF8 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B8A1AC293E300984FF8 /* GameKit.framework */; };
+		C6E37B971AC2BF5100984FF8 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B961AC2BF5100984FF8 /* libGoogleAnalyticsServices.a */; };
+		C6E37B991AC2BF7700984FF8 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B981AC2BF7700984FF8 /* CoreData.framework */; };
+		C6E37B9B1AC2BFAA00984FF8 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C6E37B9A1AC2BFAA00984FF8 /* libsqlite3.dylib */; };
 		D6B061351803AC000077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B061341803AC000077942B /* CoreMotion.framework */; };
 		F293B3CD15EB7BE500256477 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3CC15EB7BE500256477 /* QuartzCore.framework */; };
 		F293B3D115EB7BE500256477 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F293B3D015EB7BE500256477 /* OpenAL.framework */; };
@@ -266,6 +269,18 @@
 		C6E37B811AC1BA7600984FF8 /* libAdapterIAd.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libAdapterIAd.a; sourceTree = "<group>"; };
 		C6E37B831AC1BA9900984FF8 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/iAd.framework; sourceTree = DEVELOPER_DIR; };
 		C6E37B8A1AC293E300984FF8 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/GameKit.framework; sourceTree = DEVELOPER_DIR; };
+		C6E37B8D1AC2BF5100984FF8 /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
+		C6E37B8E1AC2BF5100984FF8 /* GAIDictionaryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIDictionaryBuilder.h; sourceTree = "<group>"; };
+		C6E37B8F1AC2BF5100984FF8 /* GAIEcommerceProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceProduct.h; sourceTree = "<group>"; };
+		C6E37B901AC2BF5100984FF8 /* GAIEcommerceProductAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceProductAction.h; sourceTree = "<group>"; };
+		C6E37B911AC2BF5100984FF8 /* GAIEcommercePromotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommercePromotion.h; sourceTree = "<group>"; };
+		C6E37B921AC2BF5100984FF8 /* GAIFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIFields.h; sourceTree = "<group>"; };
+		C6E37B931AC2BF5100984FF8 /* GAILogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAILogger.h; sourceTree = "<group>"; };
+		C6E37B941AC2BF5100984FF8 /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
+		C6E37B951AC2BF5100984FF8 /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
+		C6E37B961AC2BF5100984FF8 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
+		C6E37B981AC2BF7700984FF8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
+		C6E37B9A1AC2BFAA00984FF8 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
 		D6B061341803AC000077942B /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreMotion.framework; sourceTree = DEVELOPER_DIR; };
 		F293B3C815EB7BE500256477 /* CocosLuaGame iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CocosLuaGame iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F293B3CC15EB7BE500256477 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -307,6 +322,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6E37B9B1AC2BFAA00984FF8 /* libsqlite3.dylib in Frameworks */,
+				C6E37B991AC2BF7700984FF8 /* CoreData.framework in Frameworks */,
 				C6E37B8B1AC293E300984FF8 /* GameKit.framework in Frameworks */,
 				C6E37B841AC1BA9900984FF8 /* iAd.framework in Frameworks */,
 				C6E37B7F1AC1B44100984FF8 /* ImageIO.framework in Frameworks */,
@@ -318,6 +335,7 @@
 				C660EB3D1AC0553D00C9207B /* StoreKit.framework in Frameworks */,
 				C660EB3B1AC0552F00C9207B /* Social.framework in Frameworks */,
 				C660EB391AC0550C00C9207B /* MessageUI.framework in Frameworks */,
+				C6E37B971AC2BF5100984FF8 /* libGoogleAnalyticsServices.a in Frameworks */,
 				C660EB371AC054F200C9207B /* EventKitUI.framework in Frameworks */,
 				C660EB351AC054EB00C9207B /* EventKit.framework in Frameworks */,
 				C660EB331AC054DF00C9207B /* CoreTelephony.framework in Frameworks */,
@@ -475,6 +493,23 @@
 			path = iad;
 			sourceTree = "<group>";
 		};
+		C6E37B8C1AC2BF5100984FF8 /* GoogleAnalytics */ = {
+			isa = PBXGroup;
+			children = (
+				C6E37B8D1AC2BF5100984FF8 /* GAI.h */,
+				C6E37B8E1AC2BF5100984FF8 /* GAIDictionaryBuilder.h */,
+				C6E37B8F1AC2BF5100984FF8 /* GAIEcommerceProduct.h */,
+				C6E37B901AC2BF5100984FF8 /* GAIEcommerceProductAction.h */,
+				C6E37B911AC2BF5100984FF8 /* GAIEcommercePromotion.h */,
+				C6E37B921AC2BF5100984FF8 /* GAIFields.h */,
+				C6E37B931AC2BF5100984FF8 /* GAILogger.h */,
+				C6E37B941AC2BF5100984FF8 /* GAITrackedViewController.h */,
+				C6E37B951AC2BF5100984FF8 /* GAITracker.h */,
+				C6E37B961AC2BF5100984FF8 /* libGoogleAnalyticsServices.a */,
+			);
+			path = GoogleAnalytics;
+			sourceTree = "<group>";
+		};
 		F293B3BD15EB7BE500256477 = {
 			isa = PBXGroup;
 			children = (
@@ -487,6 +522,7 @@
 				F293B3CB15EB7BE500256477 /* Frameworks */,
 				C6E37B801AC1BA7600984FF8 /* iad */,
 				C6E37B741AC1B42100984FF8 /* nend */,
+				C6E37B8C1AC2BF5100984FF8 /* GoogleAnalytics */,
 				F293B3C915EB7BE500256477 /* Products */,
 				F293BC4615EB859D00256477 /* Resources */,
 				452BCB5332B50A62C0C6DAAE /* Pods */,
@@ -505,6 +541,8 @@
 		F293B3CB15EB7BE500256477 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C6E37B9A1AC2BFAA00984FF8 /* libsqlite3.dylib */,
+				C6E37B981AC2BF7700984FF8 /* CoreData.framework */,
 				C6E37B8A1AC293E300984FF8 /* GameKit.framework */,
 				C6E37B831AC1BA9900984FF8 /* iAd.framework */,
 				C6E37B7E1AC1B44000984FF8 /* ImageIO.framework */,
@@ -1009,6 +1047,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/nend",
 					"$(PROJECT_DIR)/iad",
+					"$(PROJECT_DIR)/GoogleAnalytics",
 				);
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_IOS_BEGIN)",
@@ -1052,6 +1091,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/nend",
 					"$(PROJECT_DIR)/iad",
+					"$(PROJECT_DIR)/GoogleAnalytics",
 				);
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_IOS_BEGIN)",

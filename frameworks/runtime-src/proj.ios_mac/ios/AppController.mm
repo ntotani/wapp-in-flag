@@ -33,6 +33,7 @@
 #import "CCLuaBridge.h"
 
 #import <GoogleMobileAds/GoogleMobileAds.h>
+#import "GAI.h"
 
 @implementation AppController
 
@@ -55,6 +56,9 @@ GADBannerView *banner;
                          zoneIDs: @[@"vze85d3eca448840c181"]
                         delegate: self
                          logging: YES];
+    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    [GAI sharedInstance].dispatchInterval = 20;
+    [[GAI sharedInstance] trackerWithTrackingId:@"UA-6829985-10"];
 
     cocos2d::Application *app = cocos2d::Application::getInstance();
     app->initGLContextAttrs();
