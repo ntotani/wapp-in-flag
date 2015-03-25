@@ -476,7 +476,9 @@ function MainScene:resetDot()
     if now > fever then
         self.feverCount = 7
         safeAngle = angle1
-        cc.UserDefault:getInstance():setIntegerForKey("fever", now + 60 * 60 * 24) -- one day
+        local since = 60 * 60 * 24 -- one day
+        cc.UserDefault:getInstance():setIntegerForKey("fever", now + since)
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "localNotification", { sec = since, body = DOTS_HASH[self.face].face })
     end
     local safeVel = cc.pMul(cc.pForAngle(safeAngle), dotVel)
     local safeTime = (greenX - teeX) / safeVel.x

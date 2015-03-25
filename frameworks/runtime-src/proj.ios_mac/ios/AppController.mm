@@ -44,6 +44,7 @@ static AppDelegate s_sharedApplication;
 static RootViewController *s_rootViewController;
 static int s_adCallbackID;
 static AppController *s_appController;
+static NSDictionary *localNotificationMemo = nil;
 
 GADBannerView *banner;
 
@@ -131,6 +132,7 @@ GADBannerView *banner;
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
     cocos2d::Director::getInstance()->resume();
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -166,6 +168,11 @@ GADBannerView *banner;
      cocos2d::Director::getInstance()->purgeCachedData();
 }
 
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    if (notificationSettings.types != UIUserNotificationTypeNone) {
+        [AppController localNotificationImpl];
+    }
+}
 
 - (void)dealloc {
     [super dealloc];
@@ -226,6 +233,39 @@ GADBannerView *banner;
 -(void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)vc
 {
     [vc dismissViewControllerAnimated:YES completion:nil];
+}
+
++ (void)localNotification:(NSDictionary *)args
+{
+    localNotificationMemo = args;
+    [localNotificationMemo retain];
+    NSString *currentVersion = [[UIDevice currentDevice] systemVersion];
+    if([currentVersion compare:@"8.0" options:NSNumericSearch] == NSOrderedAscending){
+        // i0S7
+        [AppController localNotificationImpl];
+    } else {
+        // iOS8
+        if ([[UIApplication sharedApplication] currentUserNotificationSettings].types == UIUserNotificationTypeNone) {
+            [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge categories:nil]];
+        } else {
+            [AppController localNotificationImpl];
+        }
+    }
+}
+
++ (void)localNotificationImpl
+{
+    if (localNotificationMemo == nil) {
+        return;
+    }
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:[localNotificationMemo[@"sec"] intValue]];
+    notification.timeZone = [NSTimeZone defaultTimeZone];
+    notification.alertBody = localNotificationMemo[@"body"];
+    notification.applicationIconBadgeNumber = 1;
+    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+    [localNotificationMemo release];
+    localNotificationMemo = nil;
 }
 
 @end
