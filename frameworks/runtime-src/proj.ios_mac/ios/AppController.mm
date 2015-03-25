@@ -33,6 +33,7 @@
 #import "CCLuaBridge.h"
 
 #import <GoogleMobileAds/GoogleMobileAds.h>
+#import <GameKit/GameKit.h>
 
 @implementation AppController
 
@@ -100,6 +101,12 @@ GADBannerView *banner;
     [window makeKeyAndVisible];
 
     //[[UIApplication sharedApplication] setStatusBarHidden: YES];
+
+    [GKLocalPlayer localPlayer].authenticateHandler = ^(UIViewController* vc, NSError* err) {
+        if (vc != nil) {
+            [viewController presentViewController:vc animated:YES completion:nil];
+        }
+    };
 
     // IMPORTANT: Setting the GLView should be done after creating the RootViewController
     cocos2d::GLView *glview = cocos2d::GLViewImpl::createWithEAGLView(eaglView);
@@ -193,6 +200,15 @@ GADBannerView *banner;
     } else {
         banner.frame = CGRectMake(0, -banner.frame.size.height, banner.frame.size.width, banner.frame.size.height);
     }
+}
+
++ (void)reportScore:(NSDictionary*)args {
+    if (![GKLocalPlayer localPlayer].isAuthenticated) {
+        return;
+    }
+    GKScore *score = [[GKScore alloc] initWithLeaderboardIdentifier:args[@"board"]];
+    score.value = [args[@"score"] longLongValue];
+    [GKScore reportScores:@[score] withCompletionHandler:nil];
 }
 
 @end

@@ -231,6 +231,9 @@ function MainScene:step(delta)
             cc.UserDefault:getInstance():setIntegerForKey("score", highScore)
             self.highScore:setString("MAX " .. highScore)
         end
+        if self.score.value % 10 == 0 then
+            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reportScore", { board = self.face, score = self.score.value })
+        end
         self:unscheduleUpdate()
         self.shareDead = false
         self.screenShot:begin()
@@ -311,6 +314,9 @@ function MainScene:dead(y)
     self.ring = display.newSprite("ring.png", x, y + rad):addTo(self.mainNode)
     self.ring:runAction(cc.Sequence:create(die()))
     self.shareMenu:show()
+    if self.score.value > 0 then
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reportScore", { board = self.face, score = self.score.value })
+    end
     audio.playSound("ob.mp3")
 end
 
