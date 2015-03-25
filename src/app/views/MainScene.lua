@@ -141,6 +141,14 @@ function MainScene:initResults()
     end)):move(0, 0):addTo(self):hide()
 end
 
+function MainScene:hasDot(idx)
+    local dotsFlags = cc.UserDefault:getInstance():getStringForKey("dots", 1)
+    for i = 1, idx - 1 do
+        dotsFlags = math.floor(dotsFlags / 2)
+    end
+    return dotsFlags % 2 == 1
+end
+
 function MainScene:initDots()
     self.dotsLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
     local dotsBg = display.newSprite("dots_bg.png"):move(display.center):addTo(self.dotsLayer)
@@ -151,10 +159,6 @@ function MainScene:initDots()
     scrollView:setTouchEnabled(true)
     scrollView:setContentSize(bgSize)
     scrollView:setInnerContainerSize(cc.size(64 * #DOTS + bgSize.width - 64, bgSize.height))
-    local hasDot = function(i)
-        local dotsFlags = cc.UserDefault:getInstance():getIntegerForKey("dots", 1)
-        return bit.band(dotsFlags, math.pow(2, i - 1)) > 0
-    end
     for i, e in ipairs(DOTS) do
         display.newSprite("dots/" .. e.name .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
     end
@@ -195,7 +199,7 @@ function MainScene:initDots()
                     scrollView:getInnerContainer():setPositionX(x)
                     for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
                     scrollView:getChildren()[i]:setScale(2)
-                    if hasDot(i) then
+                    if self:hasDot(i) then
                         commitDot:show()
                     end
                     self.dotsLayer:unscheduleUpdate()
@@ -219,7 +223,7 @@ function MainScene:initDots()
             closeDots()
         else
             for i, e in ipairs(scrollView:getChildren()) do
-                e:setColor(hasDot(i) and cc.c3b(255, 255, 255) or cc.c3b(63, 63, 63))
+                e:setColor(self:hasDot(i) and cc.c3b(255, 255, 255) or cc.c3b(63, 63, 63))
             end
             self.dotsLayer:show()
             commitDot:show()
@@ -430,10 +434,9 @@ function MainScene:checkLottery()
     if self.coin.value < COIN_PER_LOT then
         return false
     end
-    local dotsFlags = cc.UserDefault:getInstance():getIntegerForKey("dots", 1)
     local newDots = {}
     for i = 1, #DOTS do
-        if bit.band(dotsFlags, math.pow(2, i - 1)) == 0 then
+        if not self:hasDot(i) then
             table.insert(newDots, i)
         end
     end
@@ -451,8 +454,9 @@ function MainScene:checkLottery()
     local commit = nil
     commit = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
         self:updateCoin(-COIN_PER_LOT)
-        dotsFlags = bit.bor(dotsFlags, math.pow(2, newDots[lot] - 1))
-        cc.UserDefault:getInstance():setIntegerForKey("dots", dotsFlags)
+        local dotsFlags = cc.UserDefault:getInstance():getStringForKey("dots", 1)
+        dotsFlags = dotsFlags + math.pow(2, newDots[lot] - 1)
+        cc.UserDefault:getInstance():setStringForKey("dots", dotsFlags)
         dot:setColor(cc.c3b(255, 255, 255))
         effect:scaleTo({time = 0.1, scale = 1})
         lottery:unscheduleUpdate()
