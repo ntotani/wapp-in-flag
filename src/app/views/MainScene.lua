@@ -373,7 +373,7 @@ function MainScene:showResult()
             display.newSprite("star.png"):move(display.cx, display.cy + 32):addTo(self.resultLayer)
             menu:addChild(cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
                 cc.UserDefault:getInstance():setIntegerForKey("review", -1)
-                cc.Application:getInstance():openURL("http://google.com")
+                cc.Application:getInstance():openURL("itms-apps://itunes.apple.com/app/id979813732")
             end))
         end
         self.resultLayer:show()
