@@ -72,7 +72,10 @@ end
 function MainScene:initMainNode()
     self.mainNode = display.newNode():addTo(self)
     self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):addTo(self.mainNode)
-    display.newSprite("bg.png"):move(display.center):addTo(self.mainNode)
+    self.mountains = display.newSprite("bg.png"):move(display.center):addTo(self.mainNode)
+    local cloudDelta = 60
+    display.newSprite("cloud.png"):move(display.center):addTo(self.mountains):runAction(cc.RepeatForever:create(cc.Sequence:create(cc.MoveBy:create(cloudDelta, cc.p(-display.width, 0)), cc.CallFunc:create(function(e) e:setPositionX(display.width * 1.5) end), cc.MoveBy:create(cloudDelta, cc.p(-display.width, 0)))))
+    display.newSprite("cloud.png"):move(display.width * 1.5, display.cy):addTo(self.mountains):runAction(cc.RepeatForever:create(cc.Sequence:create(cc.MoveBy:create(cloudDelta * 2, cc.p(-display.width * 2, 0)), cc.CallFunc:create(function(e) e:setPositionX(display.width * 1.5) end))))
     self.tee = display.newSprite("grass.png"):addTo(self.mainNode)
     self.green = display.newSprite("grass.png"):addTo(self.mainNode)
     self.green:setPhysicsBody(cc.PhysicsBody:createBox(self.green:getContentSize(), {density = 0.1, restitution = 0.5, friction = 0.5}, cc.p(0, 0)))
@@ -365,6 +368,11 @@ function MainScene:dead(y)
     self.shareMenu:show()
     if self.score.value > 0 then
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reportScore", { board = self.face, score = self.score.value })
+    end
+    if math.random() < 0.1 then
+        local dot = display.newSprite("dots/" .. self.face .. ".png", display.width + 16, math.random(display.cy, display.height)):addTo(self.mountains)
+        dot:setOpacity(63)
+        dot:runAction(cc.Sequence:create(cc.MoveBy:create(120, cc.p(-display.width - 32, 0)), cc.RemoveSelf:create()))
     end
     audio.playSound("ob.mp3")
 end
