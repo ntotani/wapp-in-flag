@@ -400,6 +400,8 @@ function MainScene:showResult()
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = false })
     end), cc.MenuItemImage:create("board.png", "board.png"):align(cc.p(0, 0), 10, 10):onClicked(function()
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "showBoard", { id = self.face })
+    end), cc.MenuItemImage:create("info.png", "info.png"):align(cc.p(0, 0), 10, 70):onClicked(function()
+        display.newSprite("credit.png"):move(display.center):addTo(self.resultLayer)
     end)):move(0, 0)
     if not self:checkLottery() then
         local features = {"none", "share"}
