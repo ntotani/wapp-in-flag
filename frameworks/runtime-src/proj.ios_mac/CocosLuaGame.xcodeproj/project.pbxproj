@@ -65,6 +65,11 @@
 		C05D1C131923449100B808A4 /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = C05D1C111923449100B808A4 /* config.json */; };
 		C07828F818B4D72E00BD2287 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C07828F418B4D72E00BD2287 /* main.m */; };
 		C07828FA18B4D72E00BD2287 /* SimulatorApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = C07828F718B4D72E00BD2287 /* SimulatorApp.mm */; };
+		C62B1CFE1AC41C88004D563F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C62B1CFD1AC41C88004D563F /* Images.xcassets */; };
+		C62B1D001AC42A10004D563F /* Default-1024h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1CFF1AC42A10004D563F /* Default-1024h@2x.png */; };
+		C62B1D021AC42A6B004D563F /* Default-1024h.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1D011AC42A6B004D563F /* Default-1024h.png */; };
+		C62B1D051AC42ABD004D563F /* Default-1004h.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1D031AC42ABD004D563F /* Default-1004h.png */; };
+		C62B1D061AC42ABD004D563F /* Default-1004h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1D041AC42ABD004D563F /* Default-1004h@2x.png */; };
 		C660EB2B1AC0542700C9207B /* AdColony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB2A1AC0542700C9207B /* AdColony.framework */; };
 		C660EB2D1AC0549F00C9207B /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB2C1AC0549F00C9207B /* libz.1.2.5.dylib */; };
 		C660EB2F1AC054B900C9207B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB2E1AC054B900C9207B /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -245,6 +250,11 @@
 		C07828F418B4D72E00BD2287 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C07828F618B4D72E00BD2287 /* SimulatorApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatorApp.h; sourceTree = "<group>"; };
 		C07828F718B4D72E00BD2287 /* SimulatorApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SimulatorApp.mm; sourceTree = "<group>"; };
+		C62B1CFD1AC41C88004D563F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "CocosLuaGame iOS/Images.xcassets"; sourceTree = SOURCE_ROOT; };
+		C62B1CFF1AC42A10004D563F /* Default-1024h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1024h@2x.png"; sourceTree = "<group>"; };
+		C62B1D011AC42A6B004D563F /* Default-1024h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1024h.png"; sourceTree = "<group>"; };
+		C62B1D031AC42ABD004D563F /* Default-1004h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1004h.png"; sourceTree = "<group>"; };
+		C62B1D041AC42ABD004D563F /* Default-1004h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1004h@2x.png"; sourceTree = "<group>"; };
 		C660EB2A1AC0542700C9207B /* AdColony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AdColony.framework; sourceTree = "<group>"; };
 		C660EB2C1AC0549F00C9207B /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/usr/lib/libz.1.2.5.dylib; sourceTree = DEVELOPER_DIR; };
 		C660EB2E1AC054B900C9207B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/AdSupport.framework; sourceTree = DEVELOPER_DIR; };
@@ -387,6 +397,10 @@
 		5023810617EBBCAC00990C9B /* ios */ = {
 			isa = PBXGroup;
 			children = (
+				C62B1D031AC42ABD004D563F /* Default-1004h.png */,
+				C62B1D041AC42ABD004D563F /* Default-1004h@2x.png */,
+				C62B1D011AC42A6B004D563F /* Default-1024h.png */,
+				C62B1CFF1AC42A10004D563F /* Default-1024h@2x.png */,
 				521A8E6E19F0C3D200D177D7 /* Default-667h@2x.png */,
 				521A8E6F19F0C3D200D177D7 /* Default-736h@3x.png */,
 				5023810717EBBCAC00990C9B /* AppController.h */,
@@ -598,6 +612,7 @@
 		F293BC4615EB859D00256477 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C62B1CFD1AC41C88004D563F /* Images.xcassets */,
 				C05D1C111923449100B808A4 /* config.json */,
 				C03781B718BF655400FE4F13 /* res */,
 				C03781B818BF655400FE4F13 /* src */,
@@ -765,7 +780,9 @@
 			files = (
 				15A8A4491834C64F00142BE0 /* Icon-114.png in Resources */,
 				5023811D17EBBCAC00990C9B /* Icon-120.png in Resources */,
+				C62B1D051AC42ABD004D563F /* Default-1004h.png in Resources */,
 				5091733B17ECE17A00D62437 /* Icon-100.png in Resources */,
+				C62B1D061AC42ABD004D563F /* Default-1004h@2x.png in Resources */,
 				5023811B17EBBCAC00990C9B /* Default@2x.png in Resources */,
 				5091733617ECE17A00D62437 /* Icon-29.png in Resources */,
 				5023811917EBBCAC00990C9B /* Default-568h@2x.png in Resources */,
@@ -776,12 +793,15 @@
 				C03781B918BF655400FE4F13 /* res in Resources */,
 				5023812217EBBCAC00990C9B /* Icon-76.png in Resources */,
 				5091733A17ECE17A00D62437 /* Icon-80.png in Resources */,
+				C62B1D001AC42A10004D563F /* Default-1024h@2x.png in Resources */,
 				5091733717ECE17A00D62437 /* Icon-40.png in Resources */,
 				5023811E17EBBCAC00990C9B /* Icon-144.png in Resources */,
+				C62B1CFE1AC41C88004D563F /* Images.xcassets in Resources */,
 				5023811A17EBBCAC00990C9B /* Default.png in Resources */,
 				C03781BB18BF655400FE4F13 /* src in Resources */,
 				5091733817ECE17A00D62437 /* Icon-50.png in Resources */,
 				5023812117EBBCAC00990C9B /* Icon-72.png in Resources */,
+				C62B1D021AC42A6B004D563F /* Default-1024h.png in Resources */,
 				C05D1C121923449100B808A4 /* config.json in Resources */,
 				521A8E7119F0C3D200D177D7 /* Default-736h@3x.png in Resources */,
 			);
@@ -1023,6 +1043,7 @@
 			baseConfigurationReference = F5F80E7017B9D85AE8D74454 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1068,6 +1089,7 @@
 			baseConfigurationReference = 9C1896132B9C01A2EC2ACAEF /* Pods.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
