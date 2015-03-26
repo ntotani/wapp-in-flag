@@ -47,7 +47,7 @@ local DOTS = {
     {name = "pero",   vel = 800, gra = 980, res = 0.5, face = "(´ ڡ `)", dead = "(´ ڡ ...:.;::.."},
     {name = "kona",   vel = 800, gra = 980, res = 1.0, face = "(=ω=)", dead = "(=ω...:.;::.."},
     {name = "yare",   vel = 800, gra = 980, res = 0.5, face = "( ´･_･` )", dead = "( ´･_...:.;::.."},
-    {name = "owata",  vel = 800, gra = 980, res = 0.5, face = "＼(^o^)／", dead = "＼(^o^)／"}
+    {name = "owata",  vel = 400, gra = 490, res = 2.0, face = "＼(^o^)／", dead = "＼(^o^)／"}
 }
 local DOTS_HASH = {}
 for _, e in ipairs(DOTS) do DOTS_HASH[e.name] = e end
@@ -351,7 +351,16 @@ function MainScene:dead(y)
         y = y + balloon:getContentSize().height / 2 - 24
     end
     display.newSprite("dots/" .. self.face .. ".png", x, y):addTo(self.shadows):runAction(cc.Sequence:create(die(), cc.CallFunc:create(handler(self, self.showResult))))
-    self.ring = display.newSprite("ring.png", x, y + rad):addTo(self.mainNode)
+    if self.face == "owata" then
+        self.ring = display.newSprite("owata.png", x, y + rad / 2):addTo(self.mainNode)
+        local num = 8
+        for i = 1, num do
+            local vel = cc.pMul(cc.pForAngle(i * math.pi * 2 / num), 64)
+            local tiun = display.newSprite("tiun.png", x, y):addTo(self.shadows):moveBy({time = 0.5, x = vel.x, y = vel.y})
+        end
+    else
+        self.ring = display.newSprite("ring.png", x, y + rad):addTo(self.mainNode)
+    end
     self.ring:runAction(cc.Sequence:create(die()))
     self.shareMenu:show()
     if self.score.value > 0 then
@@ -609,6 +618,30 @@ function MainScene:onTouch(event)
         self.physicsContact = false
         self.bg:removeTouch()
         self:scheduleUpdate(handler(self, self.step))
+        if self.face == "owata" then
+            local trap = math.random()
+            if trap < 0.6 then
+                pb:setVelocity(cc.pMul(dir, 100))
+            elseif trap < 0.8 then
+                for _, e in ipairs({{0, -30}, {50, 50}, {30, 30}, {70, 30}, {-50, 50}, {-30, 30}, {-70, 30}, {80, -30}, {100, -10}, {120, 10}, {140, 30}, {-80, -30}, {-100, -10}, {-120, 10}, {-140, 30}}) do
+                    local bumper = display.newSprite("bumper.png"):addTo(self.bumpers)
+                    bumper:move(display.cx + e[1], display.cy + e[2] + display.height / 2)
+                    bumper:moveBy({time = 0.5, y = -display.height / 2})
+                    local bumperPb = cc.PhysicsBody:createCircle(bumper:getContentSize().width / 2, cc.PHYSICSBODY_MATERIAL_DEFAULT, cc.p(0, 0))
+                    bumperPb:setContactTestBitmask(4)
+                    bumperPb:setDynamic(false)
+                    bumper:setPhysicsBody(bumperPb)
+                end
+            else
+                local grow = function()
+                    return cc.Sequence:create(cc.DelayTime:create(0.2), cc.MoveBy:create(0.1, cc.p(0, display.height / 2)))
+                end
+                self.flag:runAction(grow())
+                self.pin:runAction(grow())
+                self.box:runAction(grow())
+                self.green:runAction(grow())
+            end
+        end
         audio.playSound("shot.mp3")
     end
 end
