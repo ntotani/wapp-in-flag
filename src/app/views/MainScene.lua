@@ -438,7 +438,6 @@ function MainScene:showResult()
                         rewardBtn:removeSelf()
                         if self:checkLottery() then
                             self.resultLayer:hide()
-                            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = false })
                         end
                     end
                 end})
@@ -452,9 +451,10 @@ function MainScene:showResult()
                 cc.UserDefault:getInstance():setIntegerForKey("review", -1)
                 cc.Application:getInstance():openURL("itms-apps://itunes.apple.com/app/id979813732")
             end))
+        else
+            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = true })
         end
         self.resultLayer:show()
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = true })
     end
     menu:addTo(self.resultLayer)
 end
@@ -497,7 +497,6 @@ function MainScene:checkLottery()
             cc.UserDefault:getInstance():setIntegerForKey("lastDot", newDots[lot])
             lottery:removeSelf()
             self.resultLayer:show()
-            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = true })
         end)
         audio.playSound("lottery.mp3")
     end)
