@@ -165,7 +165,6 @@ function MainScene:initDots()
     for i, e in ipairs(DOTS) do
         display.newSprite("dots/" .. e.name .. ".png", i * 64 - 32 + bgSize.width / 2 - 32, bgSize.height / 2):addTo(scrollView)
     end
-    scrollView:getChildren()[1]:setScale(2)
     local currentIdx = function()
         local idx = math.floor((bgSize.width / 2 - scrollView:getInnerContainer():getPositionX() - (bgSize.width / 2 - 32)) / 64) + 1
         return math.max(1, math.min(#DOTS, idx))
@@ -186,6 +185,15 @@ function MainScene:initDots()
         closeDots()
         self:resetDot()
     end)
+    local fitDot = function(i)
+        local x = -64 * (i - 1)
+        scrollView:getInnerContainer():setPositionX(x)
+        for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
+        scrollView:getChildren()[i]:setScale(2)
+        if self:hasDot(i) then
+            commitDot:show()
+        end
+    end
     scrollView:addTouchEventListener(function(sender, state)
         if state == ccui.TouchEventType.began then
             scrollView:setInertiaScrollEnabled(true)
@@ -197,14 +205,7 @@ function MainScene:initDots()
                 local currentPos = scrollView:getInnerContainer():getPositionX()
                 if currentPos == prevPos then
                     scrollView:setInertiaScrollEnabled(false)
-                    local i = currentIdx()
-                    local x = -64 * (i - 1)
-                    scrollView:getInnerContainer():setPositionX(x)
-                    for _, e in ipairs(scrollView:getChildren()) do e:setScale(1) end
-                    scrollView:getChildren()[i]:setScale(2)
-                    if self:hasDot(i) then
-                        commitDot:show()
-                    end
+                    fitDot(currentIdx())
                     self.dotsLayer:unscheduleUpdate()
                 end
                 prevPos = currentPos
@@ -225,9 +226,14 @@ function MainScene:initDots()
         if self.dotsLayer:isVisible() then
             closeDots()
         else
+            local faceIdx = 1
             for i, e in ipairs(scrollView:getChildren()) do
                 e:setColor(self:hasDot(i) and cc.c3b(255, 255, 255) or cc.c3b(63, 63, 63))
+                if DOTS[i].name == self.face then
+                    faceIdx = i
+                end
             end
+            fitDot(faceIdx)
             self.dotsLayer:show()
             commitDot:show()
             self.bg:removeTouch()
