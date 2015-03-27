@@ -638,22 +638,24 @@ class CCPluginCompile(cocos.CCPlugin):
 
             command = ' '.join([
                 "xcodebuild",
-                "-project",
-                "\"%s\"" % projectPath,
+                "-workspace",
+                "\"%s\"" % os.path.join(ios_project_dir, "CocosLuaGame.xcworkspace"),
                 "-configuration",
                 "%s" % 'Debug' if self._mode == 'debug' else 'Release',
-                "-target",
-                "\"%s\"" % targetName,
+                "-scheme",
+                "\"CocosLuaGame iOS\"",
                 "%s" % "-arch i386" if self.use_sdk == 'iphonesimulator' else '',
                 "-sdk",
                 "%s" % self.use_sdk,
                 "CONFIGURATION_BUILD_DIR=\"%s\"" % (output_dir),
-                "%s" % "VALID_ARCHS=\"i386\"" if self.use_sdk == 'iphonesimulator' else ''
+                "%s" % "VALID_ARCHS=\"i386\"" if self.use_sdk == 'iphonesimulator' else '',
+                "PROVISIONING_PROFILE='267e4774-0a6b-477f-8e14-9785c32ca292'"
                 ])
 
             if self._sign_id is not None:
                 command = "%s CODE_SIGN_IDENTITY=\"%s\"" % (command, self._sign_id)
 
+            command = "%s | xcpretty -c" % command
             self._run_cmd(command)
 
             filelist = os.listdir(output_dir)
@@ -672,7 +674,8 @@ class CCPluginCompile(cocos.CCPlugin):
                 # generate the ipa
                 app_path = os.path.join(output_dir, "%s.app" % targetName)
                 ipa_path = os.path.join(output_dir, "%s.ipa" % targetName)
-                ipa_cmd = "xcrun -sdk %s PackageApplication -v \"%s\" -o \"%s\"" % (self.use_sdk, app_path, ipa_path)
+                prov_path = os.path.join(ios_project_dir, "Owata_Golf_AppStore.mobileprovision")
+                ipa_cmd = "xcrun -sdk %s PackageApplication -v \"%s\" -o \"%s\" --embed %s --sign \"%s\"" % (self.use_sdk, app_path, ipa_path, prov_path, self._sign_id)
                 self._run_cmd(ipa_cmd)
 
             cocos.Logging.info("build succeeded.")
