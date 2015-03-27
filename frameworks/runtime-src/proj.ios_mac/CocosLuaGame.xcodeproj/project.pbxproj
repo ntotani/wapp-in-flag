@@ -17,9 +17,6 @@
 		1AF4C403178663F200122817 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AF4C402178663F200122817 /* libz.dylib */; };
 		3EEEDB61197107C0006A9FF8 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EEEDB60197107C0006A9FF8 /* MediaPlayer.framework */; };
 		5023811817EBBCAC00990C9B /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5023810817EBBCAC00990C9B /* AppController.mm */; };
-		5023811917EBBCAC00990C9B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5023810917EBBCAC00990C9B /* Default-568h@2x.png */; };
-		5023811A17EBBCAC00990C9B /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 5023810A17EBBCAC00990C9B /* Default.png */; };
-		5023811B17EBBCAC00990C9B /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5023810B17EBBCAC00990C9B /* Default@2x.png */; };
 		5023811D17EBBCAC00990C9B /* Icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 5023810D17EBBCAC00990C9B /* Icon-120.png */; };
 		5023811E17EBBCAC00990C9B /* Icon-144.png in Resources */ = {isa = PBXBuildFile; fileRef = 5023810E17EBBCAC00990C9B /* Icon-144.png */; };
 		5023811F17EBBCAC00990C9B /* Icon-152.png in Resources */ = {isa = PBXBuildFile; fileRef = 5023810F17EBBCAC00990C9B /* Icon-152.png */; };
@@ -48,8 +45,6 @@
 		50D7C96E17EBBEE6005D0B91 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50D7C96D17EBBEE6005D0B91 /* AppKit.framework */; };
 		50D7C97017EBBEEC005D0B91 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50D7C96F17EBBEEC005D0B91 /* IOKit.framework */; };
 		5200BECA1A53D9A500AC45E4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5200BEC91A53D9A500AC45E4 /* Security.framework */; };
-		521A8E7019F0C3D200D177D7 /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 521A8E6E19F0C3D200D177D7 /* Default-667h@2x.png */; };
-		521A8E7119F0C3D200D177D7 /* Default-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 521A8E6F19F0C3D200D177D7 /* Default-736h@3x.png */; };
 		9FC760431A67791200D1E6E7 /* lang in Resources */ = {isa = PBXBuildFile; fileRef = 9FC760401A67791200D1E6E7 /* lang */; };
 		9FC760451A677A4A00D1E6E7 /* SimpleConfigParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9FC760411A67791200D1E6E7 /* SimpleConfigParser.cpp */; };
 		9FF504841A5E87B100AFDA55 /* ConsoleWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9FF504811A5E87B100AFDA55 /* ConsoleWindow.xib */; };
@@ -66,10 +61,6 @@
 		C07828F818B4D72E00BD2287 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C07828F418B4D72E00BD2287 /* main.m */; };
 		C07828FA18B4D72E00BD2287 /* SimulatorApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = C07828F718B4D72E00BD2287 /* SimulatorApp.mm */; };
 		C62B1CFE1AC41C88004D563F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C62B1CFD1AC41C88004D563F /* Images.xcassets */; };
-		C62B1D001AC42A10004D563F /* Default-1024h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1CFF1AC42A10004D563F /* Default-1024h@2x.png */; };
-		C62B1D021AC42A6B004D563F /* Default-1024h.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1D011AC42A6B004D563F /* Default-1024h.png */; };
-		C62B1D051AC42ABD004D563F /* Default-1004h.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1D031AC42ABD004D563F /* Default-1004h.png */; };
-		C62B1D061AC42ABD004D563F /* Default-1004h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C62B1D041AC42ABD004D563F /* Default-1004h@2x.png */; };
 		C660EB2B1AC0542700C9207B /* AdColony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB2A1AC0542700C9207B /* AdColony.framework */; };
 		C660EB2D1AC0549F00C9207B /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB2C1AC0549F00C9207B /* libz.1.2.5.dylib */; };
 		C660EB2F1AC054B900C9207B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C660EB2E1AC054B900C9207B /* AdSupport.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -199,9 +190,6 @@
 		3EEEDB60197107C0006A9FF8 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/MediaPlayer.framework; sourceTree = DEVELOPER_DIR; };
 		5023810717EBBCAC00990C9B /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		5023810817EBBCAC00990C9B /* AppController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppController.mm; sourceTree = "<group>"; };
-		5023810917EBBCAC00990C9B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		5023810A17EBBCAC00990C9B /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		5023810B17EBBCAC00990C9B /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		5023810C17EBBCAC00990C9B /* Icon-114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-114.png"; sourceTree = "<group>"; };
 		5023810D17EBBCAC00990C9B /* Icon-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-120.png"; sourceTree = "<group>"; };
 		5023810E17EBBCAC00990C9B /* Icon-144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-144.png"; sourceTree = "<group>"; };
@@ -230,8 +218,6 @@
 		50D7C96D17EBBEE6005D0B91 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		50D7C96F17EBBEEC005D0B91 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		5200BEC91A53D9A500AC45E4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
-		521A8E6E19F0C3D200D177D7 /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
-		521A8E6F19F0C3D200D177D7 /* Default-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-736h@3x.png"; sourceTree = "<group>"; };
 		9C1896132B9C01A2EC2ACAEF /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		9FC7603F1A67791200D1E6E7 /* CodeIDESupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CodeIDESupport.h; sourceTree = "<group>"; };
 		9FC760401A67791200D1E6E7 /* lang */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lang; sourceTree = "<group>"; };
@@ -251,10 +237,6 @@
 		C07828F618B4D72E00BD2287 /* SimulatorApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatorApp.h; sourceTree = "<group>"; };
 		C07828F718B4D72E00BD2287 /* SimulatorApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SimulatorApp.mm; sourceTree = "<group>"; };
 		C62B1CFD1AC41C88004D563F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "CocosLuaGame iOS/Images.xcassets"; sourceTree = SOURCE_ROOT; };
-		C62B1CFF1AC42A10004D563F /* Default-1024h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1024h@2x.png"; sourceTree = "<group>"; };
-		C62B1D011AC42A6B004D563F /* Default-1024h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1024h.png"; sourceTree = "<group>"; };
-		C62B1D031AC42ABD004D563F /* Default-1004h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1004h.png"; sourceTree = "<group>"; };
-		C62B1D041AC42ABD004D563F /* Default-1004h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-1004h@2x.png"; sourceTree = "<group>"; };
 		C660EB2A1AC0542700C9207B /* AdColony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AdColony.framework; sourceTree = "<group>"; };
 		C660EB2C1AC0549F00C9207B /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/usr/lib/libz.1.2.5.dylib; sourceTree = DEVELOPER_DIR; };
 		C660EB2E1AC054B900C9207B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.2.sdk/System/Library/Frameworks/AdSupport.framework; sourceTree = DEVELOPER_DIR; };
@@ -397,17 +379,8 @@
 		5023810617EBBCAC00990C9B /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				C62B1D031AC42ABD004D563F /* Default-1004h.png */,
-				C62B1D041AC42ABD004D563F /* Default-1004h@2x.png */,
-				C62B1D011AC42A6B004D563F /* Default-1024h.png */,
-				C62B1CFF1AC42A10004D563F /* Default-1024h@2x.png */,
-				521A8E6E19F0C3D200D177D7 /* Default-667h@2x.png */,
-				521A8E6F19F0C3D200D177D7 /* Default-736h@3x.png */,
 				5023810717EBBCAC00990C9B /* AppController.h */,
 				5023810817EBBCAC00990C9B /* AppController.mm */,
-				5023810917EBBCAC00990C9B /* Default-568h@2x.png */,
-				5023810A17EBBCAC00990C9B /* Default.png */,
-				5023810B17EBBCAC00990C9B /* Default@2x.png */,
 				5091734A17ECE18300D62437 /* Icons */,
 				5023811317EBBCAC00990C9B /* Info.plist */,
 				5023811417EBBCAC00990C9B /* main.m */,
@@ -780,30 +753,21 @@
 			files = (
 				15A8A4491834C64F00142BE0 /* Icon-114.png in Resources */,
 				5023811D17EBBCAC00990C9B /* Icon-120.png in Resources */,
-				C62B1D051AC42ABD004D563F /* Default-1004h.png in Resources */,
 				5091733B17ECE17A00D62437 /* Icon-100.png in Resources */,
-				C62B1D061AC42ABD004D563F /* Default-1004h@2x.png in Resources */,
-				5023811B17EBBCAC00990C9B /* Default@2x.png in Resources */,
 				5091733617ECE17A00D62437 /* Icon-29.png in Resources */,
-				5023811917EBBCAC00990C9B /* Default-568h@2x.png in Resources */,
 				5091733917ECE17A00D62437 /* Icon-58.png in Resources */,
 				5023811F17EBBCAC00990C9B /* Icon-152.png in Resources */,
 				5023812017EBBCAC00990C9B /* Icon-57.png in Resources */,
-				521A8E7019F0C3D200D177D7 /* Default-667h@2x.png in Resources */,
 				C03781B918BF655400FE4F13 /* res in Resources */,
 				5023812217EBBCAC00990C9B /* Icon-76.png in Resources */,
 				5091733A17ECE17A00D62437 /* Icon-80.png in Resources */,
-				C62B1D001AC42A10004D563F /* Default-1024h@2x.png in Resources */,
 				5091733717ECE17A00D62437 /* Icon-40.png in Resources */,
 				5023811E17EBBCAC00990C9B /* Icon-144.png in Resources */,
 				C62B1CFE1AC41C88004D563F /* Images.xcassets in Resources */,
-				5023811A17EBBCAC00990C9B /* Default.png in Resources */,
 				C03781BB18BF655400FE4F13 /* src in Resources */,
 				5091733817ECE17A00D62437 /* Icon-50.png in Resources */,
 				5023812117EBBCAC00990C9B /* Icon-72.png in Resources */,
-				C62B1D021AC42A6B004D563F /* Default-1024h.png in Resources */,
 				C05D1C121923449100B808A4 /* config.json in Resources */,
-				521A8E7119F0C3D200D177D7 /* Default-736h@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1045,6 +1009,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_RESOURCE_RULES_PATH = "${SDKROOT}/ResourceRules.plist";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1091,6 +1056,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_RESOURCE_RULES_PATH = "${SDKROOT}/ResourceRules.plist";
 				COMPRESS_PNG_FILES = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1122,6 +1088,7 @@
 					"-fobjc-arc",
 					"$(inherited)",
 				);
+				PROVISIONING_PROFILE = "267e4774-0a6b-477f-8e14-9785c32ca292";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../../cocos2d-x/cocos/platform/ios $(_COCOS_HEADER_IOS_BEGIN) $(_COCOS_HEADER_IOS_END)";
