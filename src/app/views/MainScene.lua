@@ -374,7 +374,11 @@ function MainScene:dead(y)
         dot:setOpacity(63)
         dot:runAction(cc.Sequence:create(cc.MoveBy:create(120, cc.p(-display.width - 32, 0)), cc.RemoveSelf:create()))
     end
-    audio.playSound("ob.mp3")
+    if self.face == "owata" then
+        audio.playSound("tiun.mp3")
+    else
+        audio.playSound("ob.mp3")
+    end
 end
 
 function MainScene:updateCoin(val)
