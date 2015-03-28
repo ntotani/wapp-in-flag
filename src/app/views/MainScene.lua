@@ -69,6 +69,18 @@ function MainScene:onCreate()
     end
 end
 
+function MainScene:onEnter()
+    audio.preloadSound("flag.m4a")
+    audio.preloadSound("camera.mp3")
+    audio.preloadSound("cupin.mp3")
+    audio.preloadSound("coin.mp3")
+    audio.preloadSound("tiun.mp3")
+    audio.preloadSound("ob.mp3")
+    audio.preloadSound("lottery.mp3")
+    audio.preloadSound("drumroll.mp3")
+    audio.preloadSound("shot.mp3")
+end
+
 function MainScene:initMainNode()
     self.mainNode = display.newNode():addTo(self)
     self.bg = display.newLayer(cc.c3b(0, 153, 255), cc.c3b(255, 255, 255)):addTo(self.mainNode)
