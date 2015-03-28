@@ -51,6 +51,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -62,11 +63,14 @@ public class AppActivity extends Cocos2dxActivity{
 
     static String hostIPAdress = "0.0.0.0";
     private AdView mAdView;
+    private static AppActivity sApp;
+    private static float currentAdY = -100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        sApp = this;
         if(nativeIsLandScape()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         } else {
@@ -75,13 +79,13 @@ public class AppActivity extends Cocos2dxActivity{
         
         //2.Set the format of window
         mAdView = new AdView(this);
+        mAdView.setBackgroundColor(0xff000000);
         mAdView.setAdSize(AdSize.BANNER);
         mAdView.setAdUnitId("ca-app-pub-9353254478629065/6778045836");
         mAdView.loadAd(new AdRequest.Builder().addTestDevice("C22176DF884CDD4EFE0FFA0A41B8F838").build());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         mAdView.setLayoutParams(lp);
-        mFrameLayout.addView(mAdView);
         
         // Check the wifi is opened when the native is debug.
         if(nativeIsDebug())
@@ -165,7 +169,24 @@ public class AppActivity extends Cocos2dxActivity{
     public static void share(String text, String image) {
     }
 
-    public static void bannerAd(boolean show) {
+    public static void bannerAd(final boolean show) {
+        sApp.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                float nextAdY = show ? 0 : -100;
+                TranslateAnimation translate = new TranslateAnimation(0, 0, currentAdY, nextAdY);
+                translate.setFillBefore(true);
+                translate.setFillAfter(true);
+                translate.setFillEnabled(true);
+                translate.setDuration(show ? 200 : 0);
+                sApp.mAdView.startAnimation(translate);
+                if (show && sApp.mAdView.getParent() == null)
+                    sApp.mFrameLayout.addView(sApp.mAdView);
+                if (!show && sApp.mAdView.getParent() != null)
+                    sApp.mFrameLayout.removeView(sApp.mAdView);
+                currentAdY = nextAdY;
+            }
+        });
     }
 
     public static void reward(int callback) {
