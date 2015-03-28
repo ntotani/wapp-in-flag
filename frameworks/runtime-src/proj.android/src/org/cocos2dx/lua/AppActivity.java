@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.ArrayList;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxLuaJavaBridge;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -126,5 +127,25 @@ public class AppActivity extends Cocos2dxActivity{
     
     private static native boolean nativeIsLandScape();
     private static native boolean nativeIsDebug();
-    
+
+    public static void share(String text, String image) {
+    }
+
+    public static void bannerAd(boolean show) {
+    }
+
+    public static void reward(int callback) {
+        //Cocos2dxLuaJavaBridge.callLuaFunctionWithString(callback, "success");
+        Cocos2dxLuaJavaBridge.releaseLuaFunction(callback);
+    }
+
+    public static void reportScore(String board, int score) {
+    }
+
+    public static void showBoard(String id) {
+    }
+
+    public static void localNotification(int sec, String body) {
+    }
+
 }

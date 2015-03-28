@@ -149,10 +149,10 @@ function MainScene:initResults()
         if self.dotsLayer:isVisible() then return end
         local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
         self.screenShot:newImage():saveToFile(name)
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "share", {
+        self:native("share", {
             text = DOTS_HASH[self.face][self.shareDead and "dead" or "face"] .. " #OwataGolf http://j.mp/19OfYXw",
             image = name
-        })
+        }, {"text", "image"})
     end)):move(0, 0):addTo(self):hide()
 end
 
@@ -291,7 +291,7 @@ function MainScene:step(delta)
             self.highScore:setString(highScore)
         end
         if self.score.value % 10 == 0 then
-            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reportScore", { board = self.face, score = self.score.value })
+            self:native("reportScore", { board = self.face, score = self.score.value }, {"board", "score"})
         end
         self:unscheduleUpdate()
         self.shareDead = false
@@ -385,7 +385,7 @@ function MainScene:dead(y)
     self.ring:runAction(cc.Sequence:create(die()))
     self.shareMenu:show()
     if self.score.value > 0 then
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reportScore", { board = self.face, score = self.score.value })
+        self:native("reportScore", { board = self.face, score = self.score.value }, {"board", "score"})
     end
     if math.random() < 0.1 then
         local dot = display.newSprite("dots/" .. self.face .. ".png", display.width + 16, math.random(display.cy, display.height)):addTo(self.mountains)
@@ -420,9 +420,9 @@ function MainScene:showResult()
         self.ring:removeSelf()
         self.dot:setOpacity(255)
         self:resetDot()
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = false })
+        self:native("bannerAd", { show = false }, {"show"})
     end), cc.MenuItemImage:create("board.png", "board.png"):align(cc.p(0, 0), 10, 10):onClicked(function()
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "showBoard", { id = self.face })
+        self:native("showBoard", { id = self.face }, {"id"})
     end), cc.MenuItemImage:create("info.png", "info.png"):align(cc.p(0, 0), 10, 70):onClicked(function()
         if scrollView then
             scrollView:removeSelf()
@@ -457,7 +457,7 @@ function MainScene:showResult()
             local dotsBg = display.newSprite("reward.png"):move(display.center):addTo(self.resultLayer)
             local rewardBtn = nil
             rewardBtn = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
-                require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "reward", {callback = function(success)
+                self:native("reward", {callback = function(success)
                     if success then
                         self:updateCoin(COIN_PER_REWARD)
                         cc.UserDefault:getInstance():setIntegerForKey("reward", os.time() + 60 * 72) -- AdColony can only 20 in day
@@ -467,7 +467,7 @@ function MainScene:showResult()
                             self.resultLayer:hide()
                         end
                     end
-                end})
+                end}, {"callback"})
             end)
             menu:addChild(rewardBtn)
         elseif feature == "review" then
@@ -479,7 +479,7 @@ function MainScene:showResult()
                 cc.Application:getInstance():openURL("itms-apps://itunes.apple.com/app/id979813732")
             end))
         else
-            require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "bannerAd", { show = true })
+            self:native("bannerAd", { show = true }, {"show"})
         end
         self.resultLayer:show()
     end
@@ -572,7 +572,7 @@ function MainScene:resetDot()
         local since = 60 * 60 * 24 -- one day
         cc.UserDefault:getInstance():setIntegerForKey("fever", now + since)
         local body = self.face == "blank" and "OwataGolf" or DOTS_HASH[self.face].face
-        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "localNotification", { sec = since, body = body })
+        self:native("localNotification", { sec = since, body = body }, {"sec", "body"})
     end
     local safeVel = cc.pMul(cc.pForAngle(safeAngle), dotVel)
     local safeTime = (greenX - teeX) / safeVel.x
@@ -741,6 +741,16 @@ function MainScene:calcPath(vx, vy, acc, maxTime, dist, bx, by)
         currentTime = currentTime + dt
     end
     return rects
+end
+
+function MainScene:native(method, params, order)
+    if cc.Application:getInstance():getTargetPlatform() == cc.PLATFORM_OS_ANDROID then
+        local prmList = {}
+        for _, e in ipairs(order) do table.insert(prmList, params[e]) end
+        require("cocos.cocos2d.luaj").callStaticMethod("org/cocos2dx/lua/AppActivity", method, prmList)
+    else
+        require("cocos.cocos2d.luaoc").callStaticMethod("AppController", method, params)
+    end
 end
 
 function MainScene:dumpPath(path)

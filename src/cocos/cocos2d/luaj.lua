@@ -11,7 +11,7 @@ local function checkArguments(args, sig)
     for i, v in ipairs(args) do
         local t = type(v)
         if t == "number" then
-            sig[#sig + 1] = "F"
+            sig[#sig + 1] = "I"
         elseif t == "boolean" then
             sig[#sig + 1] = "Z"
         elseif t == "function" then
