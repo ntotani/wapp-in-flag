@@ -411,6 +411,7 @@ function MainScene:showResult()
     self.screenShot:begin()
     self.mainNode:visit()
     self.screenShot:endToLua()
+    local scrollView = nil
     local menu = cc.Menu:create(cc.MenuItemImage:create("retry.png", "retry.png"):align(cc.p(0.5, 0), display.cx, 10):onClicked(function()
         for _, e in ipairs(self.resultLayer:getChildren()) do e:removeSelf() end
         self.resultLayer:hide()
@@ -423,7 +424,21 @@ function MainScene:showResult()
     end), cc.MenuItemImage:create("board.png", "board.png"):align(cc.p(0, 0), 10, 10):onClicked(function()
         require("cocos.cocos2d.luaoc").callStaticMethod("AppController", "showBoard", { id = self.face })
     end), cc.MenuItemImage:create("info.png", "info.png"):align(cc.p(0, 0), 10, 70):onClicked(function()
-        display.newSprite("credit.png"):move(display.center):addTo(self.resultLayer)
+        if scrollView then
+            scrollView:removeSelf()
+            scrollView = nil
+            return
+        end
+        scrollView = ccui.ScrollView:create():addTo(self.resultLayer)
+        scrollView:setBounceEnabled(true)
+        --scrollView:setDirection(ccui.ScrollViewDir.horizontal)
+        scrollView:setTouchEnabled(true)
+        local credit = display.newSprite("credit.png"):addTo(scrollView)
+        local size = credit:getContentSize()
+        credit:move(size.width / 2, size.height / 2)
+        scrollView:setContentSize(cc.size(size.width, display.height / 2))
+        scrollView:move((display.width - size.width) / 2, (display.height - scrollView:getContentSize().height) / 2)
+        scrollView:setInnerContainerSize(size)
     end)):move(0, 0)
     if not self:checkLottery() then
         local features = {"none", "share"}
