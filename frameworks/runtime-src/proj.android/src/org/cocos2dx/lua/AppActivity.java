@@ -49,13 +49,20 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.AdSize;
 
 public class AppActivity extends Cocos2dxActivity{
 
     static String hostIPAdress = "0.0.0.0";
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +74,14 @@ public class AppActivity extends Cocos2dxActivity{
         }
         
         //2.Set the format of window
+        mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.BANNER);
+        mAdView.setAdUnitId("ca-app-pub-9353254478629065/6778045836");
+        mAdView.loadAd(new AdRequest.Builder().addTestDevice("C22176DF884CDD4EFE0FFA0A41B8F838").build());
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+        mAdView.setLayoutParams(lp);
+        mFrameLayout.addView(mAdView);
         
         // Check the wifi is opened when the native is debug.
         if(nativeIsDebug())
@@ -94,6 +109,25 @@ public class AppActivity extends Cocos2dxActivity{
             hostIPAdress = getHostIpAddress();
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        mAdView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mAdView.destroy();
+        super.onDestroy();
+    }
+
     private boolean isNetworkConnected() {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);  
             if (cm != null) {  
