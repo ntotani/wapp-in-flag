@@ -314,10 +314,12 @@ void Director::drawScene()
         _notificationNode->visit(_renderer, Mat4::IDENTITY, 0);
     }
 
+#if COCOS2D_DEBUG
     if (_displayStats)
     {
         showStats();
     }
+#endif
     _renderer->render();
 
     _eventDispatcher->dispatchEvent(_eventAfterDraw);
@@ -332,10 +334,12 @@ void Director::drawScene()
         _openGLView->swapBuffers();
     }
 
+#if COCOS2D_DEBUG
     if (_displayStats)
     {
         calculateMPF();
     }
+#endif
 }
 
 void Director::calculateDeltaTime()
