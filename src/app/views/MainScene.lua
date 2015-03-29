@@ -145,7 +145,8 @@ function MainScene:initResults()
     self.resultLayer = display.newLayer(cc.c4b(0, 0, 0, 63)):hide():addTo(self)
     self.screenShot = cc.RenderTexture:create(display.width, display.height, cc.TEXTURE2_D_PIXEL_FORMAT_RGB_A8888):move(display.center)
     self.screenShot:retain()
-    self.shareMenu = cc.Menu:create(cc.MenuItemImage:create("share_ios.png", "share_ios.png"):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
+    local iconName = "share_" .. (cc.Application:getInstance():getTargetPlatform() == cc.PLATFORM_OS_ANDROID and "and" or "ios") .. ".png"
+    self.shareMenu = cc.Menu:create(cc.MenuItemImage:create(iconName, iconName):align(cc.p(1, 0), display.right - 10, 10):onClicked(function()
         if self.dotsLayer:isVisible() then return end
         local name = cc.FileUtils:getInstance():getWritablePath() .. "screenshot.jpg"
         self.screenShot:newImage():saveToFile(name)
