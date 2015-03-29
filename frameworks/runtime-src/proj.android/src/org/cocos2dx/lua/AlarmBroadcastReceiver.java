@@ -1,6 +1,6 @@
 package org.cocos2dx.lua;
 
-import org.cocos2dx.CocosLuaGame.R;
+import net.uracon.owatag.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
