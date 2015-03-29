@@ -30,6 +30,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.io.File;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.ArrayList;
 
@@ -37,6 +38,9 @@ import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxLuaJavaBridge;
 
 import android.app.AlertDialog;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -220,6 +224,13 @@ public class AppActivity extends Cocos2dxActivity{
     }
 
     public static void localNotification(int sec, String body) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, sec);
+        Intent intent = new Intent(sApp.getApplicationContext(), AlarmBroadcastReceiver.class);
+        intent.putExtra("body", body);
+        PendingIntent pending = PendingIntent.getBroadcast(sApp.getApplicationContext(), 0, intent, 0);
+        AlarmManager am = (AlarmManager)sApp.getSystemService(Service.ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pending);
     }
 
 }
