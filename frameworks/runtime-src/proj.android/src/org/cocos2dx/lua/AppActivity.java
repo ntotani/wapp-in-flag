@@ -29,6 +29,7 @@ package org.cocos2dx.lua;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.io.File;
 import java.util.Enumeration;
 import java.util.ArrayList;
 
@@ -39,10 +40,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ActivityNotFoundException;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -166,7 +169,23 @@ public class AppActivity extends Cocos2dxActivity{
     private static native boolean nativeIsLandScape();
     private static native boolean nativeIsDebug();
 
-    public static void share(String text, String image) {
+    public static void share(final String text, final String image) {
+        sApp.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                File file = new File(image);
+                file.setReadable(true, false);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_TEXT, text);
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                try {
+                    sApp.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(sApp, "Client not found.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     public static void bannerAd(final boolean show) {
