@@ -625,7 +625,7 @@ function MainScene:resetDot()
         display.newSprite("coin.png", x, y):addTo(self.coins)
     end
     for _, e in ipairs(self.shadows:getChildren()) do e:removeSelf() end
-    if self.score.value == 0 and cc.UserDefault:getInstance():getIntegerForKey("dots", 1) > 1 then
+    if self.score.value == 0 and (cc.UserDefault:getInstance():getStringForKey("dots", 1) + 0) > 1 then
         self.dotsMenu:show()
     end
     self.bg:onTouch(handler(self, self.onTouch))
