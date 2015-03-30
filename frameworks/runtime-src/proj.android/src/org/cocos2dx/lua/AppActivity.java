@@ -91,6 +91,43 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
 
     private static Map<String, String> sBoardIdMap = new HashMap<String, String>() {{
         put("shobon", "CgkIvMqenM0UEAIQAQ");
+        put("kita", "CgkIvMqenM0UEAIQBQ");
+        put("monyu", "CgkIvMqenM0UEAIQBg");
+        put("pokan", "CgkIvMqenM0UEAIQBw");
+        put("shakin", "CgkIvMqenM0UEAIQCA");
+        put("pupu", "CgkIvMqenM0UEAIQCQ");
+        put("tehe", "CgkIvMqenM0UEAIQCg");
+        put("jito", "CgkIvMqenM0UEAIQCw");
+        put("he", "CgkIvMqenM0UEAIQDA");
+        put("mona", "CgkIvMqenM0UEAIQDQ");
+        put("mega", "CgkIvMqenM0UEAIQDg");
+        put("yoda", "CgkIvMqenM0UEAIQDw");
+        put("nipa", "CgkIvMqenM0UEAIQEA");
+        put("cry", "CgkIvMqenM0UEAIQEQ");
+        put("po", "CgkIvMqenM0UEAIQEg");
+        put("een", "CgkIvMqenM0UEAIQEw");
+        put("buwa", "CgkIvMqenM0UEAIQFA");
+        put("iiha", "CgkIvMqenM0UEAIQFQ");
+        put("nonowa", "CgkIvMqenM0UEAIQFg");
+        put("eee", "CgkIvMqenM0UEAIQFw");
+        put("puu", "CgkIvMqenM0UEAIQGA");
+        put("biki", "CgkIvMqenM0UEAIQGQ");
+        put("tira", "CgkIvMqenM0UEAIQGg");
+        put("haha", "CgkIvMqenM0UEAIQGw");
+        put("foon", "CgkIvMqenM0UEAIQHA");
+        put("blank", "CgkIvMqenM0UEAIQHQ");
+        put("cyun", "CgkIvMqenM0UEAIQHg");
+        put("puyo", "CgkIvMqenM0UEAIQHw");
+        put("tere", "CgkIvMqenM0UEAIQIA");
+        put("robo", "CgkIvMqenM0UEAIQIQ");
+        put("nyan", "CgkIvMqenM0UEAIQIg");
+        put("usa", "CgkIvMqenM0UEAIQIw");
+        put("manda", "CgkIvMqenM0UEAIQJA");
+        put("suya", "CgkIvMqenM0UEAIQJQ");
+        put("pero", "CgkIvMqenM0UEAIQJg");
+        put("kona", "CgkIvMqenM0UEAIQJw");
+        put("yare", "CgkIvMqenM0UEAIQKA");
+        put("owata", "CgkIvMqenM0UEAIQKQ");
     }};
 
     @Override
