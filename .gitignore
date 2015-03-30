@@ -37,7 +37,8 @@ ipch/
 
 # Ignore files build by ndk and eclipse
 #libs/
-frameworks/runtime-src/proj.android/libs/armeabi/
+frameworks/runtime-src/proj.android/libs/armeabi/*
+!frameworks/runtime-src/proj.android/libs/armeabi/libImmEndpointWarpJ.so
 bin/
 obj/
 gen/

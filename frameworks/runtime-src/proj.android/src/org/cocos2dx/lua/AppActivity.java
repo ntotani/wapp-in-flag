@@ -72,6 +72,8 @@ import com.google.android.gms.common.*;
 import com.google.android.gms.common.api.*;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
+import com.jirbo.adcolony.*;
+
 import net.uracon.owatag.R;
 
 public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -88,6 +90,7 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     private static String sBoardID = null;
     private static final String SP_NAME = "owatag_game_service";
     private static final String SP_KEY = "owatag_login";
+    private static boolean sRewardSuccess = false;
 
     private static Map<String, String> sBoardIdMap = new HashMap<String, String>() {{
         put("shobon", "CgkIvMqenM0UEAIQAQ");
@@ -156,6 +159,18 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
             .addOnConnectionFailedListener(this)
             .addApi(Games.API).addScope(Games.SCOPE_GAMES)
             .build();
+
+        String version = "1.0.0";
+        try {
+            version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch(android.content.pm.PackageManager.NameNotFoundException e) {
+        }
+        AdColony.configure(this, String.format("version:%s,store:google", version), "app840964bf14404a0d89", "vz74bcdc5a758946018b");
+        AdColony.addV4VCListener(new AdColonyV4VCListener() {
+            public void onAdColonyV4VCReward(AdColonyV4VCReward reward) {
+                sRewardSuccess = reward.success();
+            }
+        });
         
         // Check the wifi is opened when the native is debug.
         if(nativeIsDebug())
@@ -202,11 +217,13 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     public void onResume() {
         super.onResume();
         mAdView.resume();
+        AdColony.resume(this);
     }
 
     @Override
     public void onPause() {
         mAdView.pause();
+        AdColony.pause();
         super.onPause();
     }
 
@@ -336,9 +353,20 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
         });
     }
 
-    public static void reward(int callback) {
-        //Cocos2dxLuaJavaBridge.callLuaFunctionWithString(callback, "success");
-        Cocos2dxLuaJavaBridge.releaseLuaFunction(callback);
+    public static void reward(final int callback) {
+        sRewardSuccess = false;
+        sApp.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AdColonyV4VCAd().withListener(new AdColonyAdListener() {
+                    public void onAdColonyAdStarted(AdColonyAd ad) {}
+                    public void onAdColonyAdAttemptFinished(AdColonyAd ad) {
+                        Cocos2dxLuaJavaBridge.callLuaFunctionWithString(callback, sRewardSuccess ? "success" : "fail");
+                        Cocos2dxLuaJavaBridge.releaseLuaFunction(callback);
+                    }
+                }).show();
+            }
+        });
     }
 
     public static boolean isSignIn() {

@@ -458,8 +458,8 @@ function MainScene:showResult()
             local dotsBg = display.newSprite("reward.png"):move(display.center):addTo(self.resultLayer)
             local rewardBtn = nil
             rewardBtn = cc.MenuItemImage:create("retry.png", "retry.png"):move(display.cx, display.cy - dotsBg:getContentSize().height / 2):onClicked(function()
-                self:native("reward", {callback = function(success)
-                    if success then
+                self:native("reward", {callback = function(ret)
+                    if ret == "success" then
                         self:updateCoin(COIN_PER_REWARD)
                         cc.UserDefault:getInstance():setIntegerForKey("reward", os.time() + 60 * 72) -- AdColony can only 20 in day
                         dotsBg:removeSelf()

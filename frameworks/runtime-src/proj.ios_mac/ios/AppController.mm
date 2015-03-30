@@ -200,7 +200,7 @@ GADBannerView *banner;
 - (void)onAdColonyV4VCReward:(BOOL)success currencyName:(NSString*)currencyName currencyAmount:(int)amount inZone:(NSString*)zoneID {
     cocos2d::LuaBridge::pushLuaFunctionById(s_adCallbackID);
     cocos2d::LuaStack *stack = cocos2d::LuaBridge::getStack();
-    stack->pushBoolean(success);
+    stack->pushString(success ? "success" : "fail");
     stack->executeFunction(1);
     cocos2d::LuaBridge::releaseLuaFunctionById(s_adCallbackID);
 }
