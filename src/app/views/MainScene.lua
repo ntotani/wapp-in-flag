@@ -127,8 +127,14 @@ function MainScene:initScores()
     self.score:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.score.value = 0
     self.score:addTo(self.mainNode)
+    local statusBarPadding = 0
+    if cc.Application:getInstance():getTargetPlatform() == cc.PLATFORM_OS_ANDROID then
+        statusBarPadding = 12
+    else
+        statusBarPadding = 24
+    end
     local coinValue = cc.UserDefault:getInstance():getIntegerForKey("coin", 0)
-    self.coin = cc.Label:createWithSystemFont(coinValue, "Arial", 20):align(cc.p(1, 1), display.right - 10, display.top - 24):addTo(self.mainNode)
+    self.coin = cc.Label:createWithSystemFont(coinValue, "Arial", 20):align(cc.p(1, 1), display.right - 10, display.top - statusBarPadding):addTo(self.mainNode)
     self.coin:enableOutline(cc.c4b(0, 0, 0, 255), 2)
     self.coin.value = coinValue
     self.coin.icon = display.newSprite("coin.png"):align(cc.p(1, 1), self.coin:getPositionX() - self.coin:getContentSize().width - 5, self.coin:getPositionY()):addTo(self.mainNode)
@@ -136,9 +142,9 @@ function MainScene:initScores()
     if cc.UserDefault:getInstance():getIntegerForKey("fever", -1) == -1 then
         cc.UserDefault:getInstance():setIntegerForKey("fever", os.time() + 60)
     end
-    local crown = display.newSprite("crown.png"):align(cc.p(0, 1), 10, display.top - 24):addTo(self.mainNode)
+    local crown = display.newSprite("crown.png"):align(cc.p(0, 1), 10, display.top - statusBarPadding):addTo(self.mainNode)
     local highScore = cc.UserDefault:getInstance():getIntegerForKey("score", 0)
-    self.highScore = cc.Label:createWithSystemFont(highScore, "Arial", 20):align(cc.p(0, 1), crown:getContentSize().width + 15, display.top - 24):addTo(self.mainNode):enableOutline(cc.c4b(0, 0, 0, 255), 2)
+    self.highScore = cc.Label:createWithSystemFont(highScore, "Arial", 20):align(cc.p(0, 1), crown:getContentSize().width + 15, display.top - statusBarPadding):addTo(self.mainNode):enableOutline(cc.c4b(0, 0, 0, 255), 2)
 end
 
 function MainScene:initResults()
