@@ -75,6 +75,7 @@ import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jirbo.adcolony.*;
 
 import net.uracon.owatag.R;
+import net.uracon.owatag.BuildConfig;
 
 public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
