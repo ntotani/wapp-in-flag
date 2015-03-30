@@ -86,6 +86,8 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     private boolean mResolvingConnectionFailure = false;
     private boolean mSignInClicked = false;
     private static String sBoardID = null;
+    private static final String SP_NAME = "owatag_game_service";
+    private static final String SP_KEY = "owatag_login";
 
     private static Map<String, String> sBoardIdMap = new HashMap<String, String>() {{
         put("shobon", "CgkIvMqenM0UEAIQAQ");
@@ -148,6 +150,9 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     @Override
     protected void onStart() {
         super.onStart();
+        if (getSharedPreferences(SP_NAME, MODE_PRIVATE).getBoolean(SP_KEY, false)) {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
@@ -180,6 +185,7 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
             startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient, sBoardID), RC_LEADER_BOARD);
             sBoardID = null;
         }
+        getSharedPreferences(SP_NAME, MODE_PRIVATE).edit().putBoolean(SP_KEY, true).commit();
     }
 
     @Override
