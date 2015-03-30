@@ -218,6 +218,9 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
             } else {
                 BaseGameUtils.showActivityResultError(this, requestCode, resultCode, R.string.signin_failure);
             }
+        } else if (requestCode == RC_LEADER_BOARD && resultCode == GamesActivityResultCodes.RESULT_RECONNECT_REQUIRED) {
+            mSignInClicked = false;
+            getSharedPreferences(SP_NAME, MODE_PRIVATE).edit().remove(SP_KEY).commit();
         }
         super.onActivityResult(requestCode, resultCode, intent);
     }
