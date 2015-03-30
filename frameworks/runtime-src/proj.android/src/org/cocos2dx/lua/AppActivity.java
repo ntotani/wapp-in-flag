@@ -149,7 +149,11 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
         mAdView.setBackgroundColor(0xff000000);
         mAdView.setAdSize(AdSize.BANNER);
         mAdView.setAdUnitId("ca-app-pub-9353254478629065/6778045836");
-        mAdView.loadAd(new AdRequest.Builder().addTestDevice("C22176DF884CDD4EFE0FFA0A41B8F838").build());
+        AdRequest.Builder adBuilder = new AdRequest.Builder();
+        if (BuildConfig.DEBUG) {
+            adBuilder.addTestDevice("C22176DF884CDD4EFE0FFA0A41B8F838");
+        }
+        mAdView.loadAd(adBuilder.build());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         mAdView.setLayoutParams(lp);
