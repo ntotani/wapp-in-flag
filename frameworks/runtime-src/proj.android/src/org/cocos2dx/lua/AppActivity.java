@@ -33,6 +33,8 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxLuaJavaBridge;
@@ -65,13 +67,29 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.games.*;
+import com.google.android.gms.common.*;
+import com.google.android.gms.common.api.*;
+import com.google.example.games.basegameutils.BaseGameUtils;
 
-public class AppActivity extends Cocos2dxActivity{
+import net.uracon.owatag.R;
+
+public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     static String hostIPAdress = "0.0.0.0";
+    private static int RC_SIGN_IN = 9001;
+    private static int RC_LEADER_BOARD = 9002;
     private AdView mAdView;
     private static AppActivity sApp;
     private static float currentAdY = -100;
+    private GoogleApiClient mGoogleApiClient;
+    private boolean mResolvingConnectionFailure = false;
+    private boolean mSignInClicked = false;
+    private static String sBoardID = null;
+
+    private static Map<String, String> sBoardIdMap = new HashMap<String, String>() {{
+        put("shobon", "CgkIvMqenM0UEAIQAQ");
+    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +111,12 @@ public class AppActivity extends Cocos2dxActivity{
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         mAdView.setLayoutParams(lp);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+            .build();
         
         // Check the wifi is opened when the native is debug.
         if(nativeIsDebug())
@@ -122,6 +146,17 @@ public class AppActivity extends Cocos2dxActivity{
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         mAdView.resume();
@@ -137,6 +172,48 @@ public class AppActivity extends Cocos2dxActivity{
     public void onDestroy() {
         mAdView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        if (sBoardID != null) {
+            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient, sBoardID), RC_LEADER_BOARD);
+            sBoardID = null;
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (mResolvingConnectionFailure) {
+            return;
+        }
+        if (mSignInClicked) {
+            mSignInClicked = false;
+            mResolvingConnectionFailure = true;
+            if (!BaseGameUtils.resolveConnectionFailure(this, mGoogleApiClient, connectionResult, RC_SIGN_IN, getString(R.string.signin_other_error))) {
+                mResolvingConnectionFailure = false;
+            }
+        }
+        // Put code here to display the sign-in button
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == RC_SIGN_IN) {
+            mSignInClicked = false;
+            mResolvingConnectionFailure = false;
+            if (resultCode == RESULT_OK) {
+                mGoogleApiClient.connect();
+            } else {
+                BaseGameUtils.showActivityResultError(this, requestCode, resultCode, R.string.signin_failure);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     private boolean isNetworkConnected() {
@@ -217,10 +294,27 @@ public class AppActivity extends Cocos2dxActivity{
         Cocos2dxLuaJavaBridge.releaseLuaFunction(callback);
     }
 
+    public static boolean isSignIn() {
+        return sApp.mGoogleApiClient != null && sApp.mGoogleApiClient.isConnected();
+    }
+
     public static void reportScore(String board, int score) {
     }
 
     public static void showBoard(String id) {
+        final String boardId = sBoardIdMap.get(id);
+        if (!isSignIn()) {
+            sApp.mSignInClicked = true;
+            sBoardID = boardId;
+            sApp.mGoogleApiClient.connect();
+        } else {
+            sApp.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    sApp.startActivityForResult(Games.Leaderboards.getLeaderboardIntent(sApp.mGoogleApiClient, boardId), RC_LEADER_BOARD);
+                }
+            });
+        }
     }
 
     public static void localNotification(int sec, String body) {

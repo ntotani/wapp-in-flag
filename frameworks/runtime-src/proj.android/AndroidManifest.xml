@@ -14,6 +14,7 @@
         <!-- Tell Cocos2dxActivity the name of our .so -->
         <meta-data android:name="android.app.lib_name"
                   android:value="cocos2dlua" />
+        <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id" />
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 					  
         <receiver android:name="org.cocos2dx.lua.AlarmBroadcastReceiver"></receiver>
