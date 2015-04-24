@@ -185,7 +185,9 @@ GADBannerView *banner;
 + (void)share:(NSDictionary*)args
 {
     UIActivityViewController *av = [[UIActivityViewController alloc] initWithActivityItems:@[args[@"text"], [UIImage imageWithContentsOfFile:args[@"image"]]] applicationActivities:nil];
-    av.popoverPresentationController.sourceView = s_rootViewController.view;
+    if ([av respondsToSelector:@selector(popoverPresentationController)]) {
+        av.popoverPresentationController.sourceView = s_rootViewController.view;
+    }
     [s_rootViewController presentViewController:av animated:YES completion:nil];
 }
 
