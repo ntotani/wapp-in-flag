@@ -89,7 +89,9 @@ GADBannerView *banner;
     banner.rootViewController = viewController;
     [viewController.view addSubview:banner];
     GADRequest *req = [GADRequest request];
+#ifdef DEBUG
     req.testDevices = @[@"222a73cb790e1c8aea3fe4fcbee5538a", @"d4bd2d366be0f2ae169015eaf3ce4714"];
+#endif
     [banner loadRequest:req];
 
     // Set RootViewController to window
