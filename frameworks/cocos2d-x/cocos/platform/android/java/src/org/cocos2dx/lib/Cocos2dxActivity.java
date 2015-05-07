@@ -56,10 +56,10 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
     // ===========================================================
     // Fields
     // ===========================================================
-    
+
     private Cocos2dxGLSurfaceView mGLSurfaceView = null;
     private int[] mGLContextAttrs = null;
-    private Cocos2dxHandler mHandler = null;   
+    private Cocos2dxHandler mHandler = null;
     private static Cocos2dxActivity sContext = null;
     private Cocos2dxVideoHelper mVideoHelper = null;
     private Cocos2dxWebViewHelper mWebViewHelper = null;
@@ -75,7 +75,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         {
             configAttribs = attribs;
         }
-        
+
         public EGLConfig selectConfig(EGL10 egl, EGLDisplay display, EGLConfig[] configs, int[] attribs)
         {
             for (EGLConfig config : configs) {
@@ -109,16 +109,16 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
             }
             return defaultValue;
         }
-        
+
         @Override
-        public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) 
+        public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display)
         {
             int[] numConfigs = new int[1];
             if(egl.eglGetConfigs(display, null, 0, numConfigs))
             {
                 EGLConfig[] configs = new EGLConfig[numConfigs[0]];
                 int[] EGLattribs = {
-                        EGL10.EGL_RED_SIZE, configAttribs[0], 
+                        EGL10.EGL_RED_SIZE, configAttribs[0],
                         EGL10.EGL_GREEN_SIZE, configAttribs[1],
                         EGL10.EGL_BLUE_SIZE, configAttribs[2],
                         EGL10.EGL_ALPHA_SIZE, configAttribs[3],
@@ -128,7 +128,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
                         EGL10.EGL_NONE
                                     };
                 int[] choosedConfigNum = new int[1];
-                
+
                 egl.eglChooseConfig(display, EGLattribs, configs, numConfigs[0], choosedConfigNum);
                 if(choosedConfigNum[0]>0)
                 {
@@ -137,7 +137,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
                 else
                 {
                     int[] defaultEGLattribs = {
-                            EGL10.EGL_RED_SIZE, 5, 
+                            EGL10.EGL_RED_SIZE, 5,
                             EGL10.EGL_GREEN_SIZE, 6,
                             EGL10.EGL_BLUE_SIZE, 5,
                             EGL10.EGL_ALPHA_SIZE, 0,
@@ -147,7 +147,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
                             EGL10.EGL_NONE
                                         };
                     int[] defaultEGLattribsAlpha = {
-                            EGL10.EGL_RED_SIZE, 4, 
+                            EGL10.EGL_RED_SIZE, 4,
                             EGL10.EGL_GREEN_SIZE, 4,
                             EGL10.EGL_BLUE_SIZE, 4,
                             EGL10.EGL_ALPHA_SIZE, 4,
@@ -184,11 +184,11 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         }
 
     }
-    
+
     public static Context getContext() {
         return sContext;
     }
-    
+
     public void setKeepScreenOn(boolean value) {
         final boolean newValue = value;
         runOnUiThread(new Runnable() {
@@ -198,7 +198,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
             }
         });
     }
-    
+
     protected void onLoadNativeLibraries() {
         try {
             ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
@@ -209,11 +209,11 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
             e.printStackTrace();
         }
     }
-    
+
     // ===========================================================
     // Constructors
     // ===========================================================
-    
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,16 +223,16 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
         sContext = this;
         this.mHandler = new Cocos2dxHandler(this);
-        
+
         Cocos2dxHelper.init(this);
-        
+
         this.mGLContextAttrs = getGLContextAttrs();
         this.init();
 
         if (mVideoHelper == null) {
             mVideoHelper = new Cocos2dxVideoHelper(this, mFrameLayout);
         }
-        
+
         if(mWebViewHelper == null){
             mWebViewHelper = new Cocos2dxWebViewHelper(mFrameLayout);
         }
@@ -240,7 +240,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
     //native method,call GLViewImpl::getGLContextAttrs() to get the OpenGL ES context attributions
     private static native int[] getGLContextAttrs();
-    
+
     // ===========================================================
     // Getter & Setter
     // ===========================================================
@@ -260,11 +260,11 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
     @Override
     protected void onPause() {
         super.onPause();
-        
+
         Cocos2dxHelper.onPause();
         this.mGLSurfaceView.onPause();
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -279,18 +279,18 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
     }
 
     @Override
-    public void showEditTextDialog(final String pTitle, final String pContent, final int pInputMode, final int pInputFlag, final int pReturnType, final int pMaxLength) { 
+    public void showEditTextDialog(final String pTitle, final String pContent, final int pInputMode, final int pInputFlag, final int pReturnType, final int pMaxLength) {
         Message msg = new Message();
         msg.what = Cocos2dxHandler.HANDLER_SHOW_EDITBOX_DIALOG;
         msg.obj = new Cocos2dxHandler.EditBoxMessage(pTitle, pContent, pInputMode, pInputFlag, pReturnType, pMaxLength);
         this.mHandler.sendMessage(msg);
     }
-    
+
     @Override
     public void runOnGLThread(final Runnable pRunnable) {
         this.mGLSurfaceView.queueEvent(pRunnable);
     }
-    
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -307,7 +307,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
     // Methods
     // ===========================================================
     public void init() {
-        
+
         // FrameLayout
         ViewGroup.LayoutParams framelayout_params =
             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -341,7 +341,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
         // Set framelayout as the content view
         setContentView(mFrameLayout);
     }
-    
+
     public Cocos2dxGLSurfaceView onCreateView() {
         Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
         //this line is need on some device if we specify an alpha bits
@@ -360,7 +360,7 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
       Log.d(TAG, "product=" + product);
       boolean isEmulator = false;
       if (product != null) {
-         isEmulator = product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_");
+         isEmulator = product.equals("sdk") || product.contains("_sdk") || product.contains("sdk_") || product.contains("vbox");
       }
       Log.d(TAG, "isEmulator=" + isEmulator);
       return isEmulator;

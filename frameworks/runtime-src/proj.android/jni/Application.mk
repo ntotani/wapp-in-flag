@@ -5,7 +5,8 @@ APP_LDFLAGS := -latomic
 
 
 ifeq ($(NDK_DEBUG),1)
-  APP_CPPFLAGS += -DCOCOS2D_DEBUG=1
+  APP_STL := c++_static
+  APP_CPPFLAGS += -DCOCOS2D_DEBUG=1 -U__SSE__
   APP_OPTIM := debug
 else
   APP_CPPFLAGS += -DNDEBUG
