@@ -184,7 +184,7 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
             }
         });
         if (mAidAdController == null) {
-            mAidAdController = new AdController("net.uracon.owatag", this) {
+            mAidAdController = new AdController("net.uracon.owataQ3CW", this) {
                 protected void dialogQuitButtonWasClicked(Dialog dialog, View view) {
                     super.dialogQuitButtonWasClicked(dialog, view);
                     System.exit(0);
