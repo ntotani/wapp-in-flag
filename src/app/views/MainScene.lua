@@ -64,6 +64,12 @@ function MainScene:onCreate()
     cl:registerScriptHandler(handler(self, self.onContactPostsolve), cc.Handler.EVENT_PHYSICS_CONTACT_POSTSOLVE)
     cl:registerScriptHandler(handler(self, self.onContactSeparate), cc.Handler.EVENT_PHYSICS_CONTACT_SEPERATE)
     self:getEventDispatcher():addEventListenerWithSceneGraphPriority(cl, self)
+    local kl = cc.EventListenerKeyboard:create()
+    kl:registerScriptHandler(function(code, evt)
+        if code ~= 6 then return end
+        require("cocos.cocos2d.luaj").callStaticMethod("org/cocos2dx/lua/AppActivity", "showFinishAd", {})
+    end, cc.Handler.EVENT_KEYBOARD_RELEASED)
+    self:getEventDispatcher():addEventListenerWithSceneGraphPriority(kl, self)
     if cc.UserDefault:getInstance():getIntegerForKey("review", 0) == 0 then
         cc.UserDefault:getInstance():setIntegerForKey("review", os.time() + 60 * 60 * 24) -- require review tomorrow
     end

@@ -3,7 +3,7 @@ Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
 Copyright (c) 2013-2014 Chukong Technologies Inc.
- 
+
 http://www.cocos2d-x.org
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -43,6 +43,7 @@ import android.app.AlertDialog;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,12 +56,14 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -73,6 +76,7 @@ import com.google.android.gms.common.api.*;
 import com.google.example.games.basegameutils.BaseGameUtils;
 
 import com.jirbo.adcolony.*;
+import jp.live_aid.aid.AdController;
 
 import net.uracon.owatag.R;
 import net.uracon.owatag.BuildConfig;
@@ -84,6 +88,7 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     private static int RC_LEADER_BOARD = 9002;
     private AdView mAdView;
     private static AppActivity sApp;
+    private Handler handerForLuaj;
     private static float currentAdY = -100;
     private GoogleApiClient mGoogleApiClient;
     private boolean mResolvingConnectionFailure = false;
@@ -92,6 +97,7 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     private static final String SP_NAME = "owatag_game_service";
     private static final String SP_KEY = "owatag_login";
     private static boolean sRewardSuccess = false;
+    private AdController mAidAdController;
 
     private static Map<String, String> sBoardIdMap = new HashMap<String, String>() {{
         put("shobon", "CgkIvMqenM0UEAIQAQ");
@@ -137,14 +143,15 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         sApp = this;
+        handerForLuaj = new Handler();
         if(nativeIsLandScape()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
-        
+
         //2.Set the format of window
         mAdView = new AdView(this);
         mAdView.setBackgroundColor(0xff000000);
@@ -176,7 +183,16 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
                 sRewardSuccess = reward.success();
             }
         });
-        
+        if (mAidAdController == null) {
+            mAidAdController = new AdController("net.uracon.owatag", this) {
+                protected void dialogQuitButtonWasClicked(Dialog dialog, View view) {
+                    super.dialogQuitButtonWasClicked(dialog, view);
+                    System.exit(0);
+                }
+            };
+            mAidAdController.setCreativeStyle(AdController.CreativeStyle.POPUP_IMAGE);
+        }
+
         // Check the wifi is opened when the native is debug.
         if(nativeIsDebug())
         {
@@ -187,7 +203,7 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
                 builder.setTitle("Warning");
                 builder.setMessage("Please open WIFI for debuging...");
                 builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-                    
+
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
@@ -223,12 +239,14 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
         super.onResume();
         mAdView.resume();
         AdColony.resume(this);
+        mAidAdController.startPreloading();
     }
 
     @Override
     public void onPause() {
         mAdView.pause();
         AdColony.pause();
+        mAidAdController.stopPreloading();
         super.onPause();
     }
 
@@ -286,9 +304,9 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
     }
 
     private boolean isNetworkConnected() {
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);  
-            if (cm != null) {  
-                NetworkInfo networkInfo = cm.getActiveNetworkInfo();  
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
             ArrayList networkTypes = new ArrayList();
             networkTypes.add(ConnectivityManager.TYPE_WIFI);
             try {
@@ -299,23 +317,23 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
                 throw new RuntimeException(iae);
             }
             if (networkInfo != null && networkTypes.contains(networkInfo.getType())) {
-                    return true;  
-                }  
-            }  
-            return false;  
-        } 
-     
+                    return true;
+                }
+            }
+            return false;
+        }
+
     public String getHostIpAddress() {
         WifiManager wifiMgr = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
         int ip = wifiInfo.getIpAddress();
         return ((ip & 0xFF) + "." + ((ip >>>= 8) & 0xFF) + "." + ((ip >>>= 8) & 0xFF) + "." + ((ip >>>= 8) & 0xFF));
     }
-    
+
     public static String getLocalIpAddress() {
         return hostIPAdress;
     }
-    
+
     private static native boolean nativeIsLandScape();
     private static native boolean nativeIsDebug();
 
@@ -408,6 +426,14 @@ public class AppActivity extends Cocos2dxActivity implements GoogleApiClient.Con
         PendingIntent pending = PendingIntent.getBroadcast(sApp.getApplicationContext(), 0, intent, 0);
         AlarmManager am = (AlarmManager)sApp.getSystemService(Service.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pending);
+    }
+
+    public static void showFinishAd() {
+        sApp.handerForLuaj.post(new Runnable() {
+            @Override public void run() {
+                sApp.mAidAdController.showDialog(AdController.DialogType.ON_EXIT);
+            }
+        });
     }
 
 }
